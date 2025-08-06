@@ -1,8 +1,8 @@
 package com.devjoliveira.jocatalog.services;
 
-import java.util.List;
-
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +23,8 @@ public class CategoryService {
   }
 
   @Transactional(readOnly = true)
-  public List<CategoryDTO> findAll() {
-    return categoryRepository.findAll().stream().map(CategoryDTO::new).toList();
+  public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
+    return categoryRepository.findAll(pageRequest).map(CategoryDTO::new);
   }
 
   @Transactional(readOnly = true)

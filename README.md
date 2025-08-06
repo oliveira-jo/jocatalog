@@ -5,14 +5,12 @@
 ## Arquivos de configuração
 
 #### application.properties
-
 ```
 spring.profiles.active=test
 spring.jpa.open-in-view=false
 ```
 
 #### application-test.properties
-
 ```
 # H2 connection
 spring.datasource.url=jdbc:h2:mem:testdb
@@ -27,7 +25,6 @@ spring.jpa.properties.hibernate.format_sql=true
 ```
 
 #### application-dev.properties
-
 ```
 #spring.jpa.properties.jakarta.persistence.schema-generation.create-source=metadata
 #spring.jpa.properties.jakarta.persistence.schema-generation.scripts.action=create
@@ -44,7 +41,6 @@ spring.jpa.hibernate.ddl-auto=none
 ```
 
 #### application-prod.properties
-
 ```
 spring.datasource.url=${DATABASE_URL}
 
@@ -54,12 +50,17 @@ spring.jpa.properties.hibernate.format_sql=false
 ```
 
 ## SQL para seed da base de dados de teste
-
 ```sql
 INSERT INTO tb_category (name, created_At) VALUES ('Livros', NOW());
 INSERT INTO tb_category (name, created_At) VALUES ('Eletrônicos', NOW());
 INSERT INTO tb_category (name, created_At) VALUES ('Computadores', NOW());
 
+```
 
-````
-
+## Parâmetros de paginação
+```java
+@RequestParam(value = "page", defaultValue = "0") Integer page,
+@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
+@RequestParam(value = "orderBy", defaultValue = "moment") String orderBy,
+@RequestParam(value = "direction", defaultValue = "DESC") String direction
+```
