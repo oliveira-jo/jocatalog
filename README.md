@@ -1,6 +1,11 @@
 
 # Recursos para back end
 
+## Introduction
+This is a project of a simple catalog CRUD and management, that was implemented to have as a base and example of backend resourses, like: code exemples, configurations, dev profiles, ORM, database config, project structure, and others. 
+
+## Project Model
+![Project Model](/backend/assets/model-jo-catalog.png)
 
 ## Arquivos de configuração
 
