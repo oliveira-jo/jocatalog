@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devjoliveira.jocatalog.dtos.ProductDTO;
 import com.devjoliveira.jocatalog.entities.Product;
+import com.devjoliveira.jocatalog.repositories.CategoryRepository;
 import com.devjoliveira.jocatalog.repositories.ProductRepository;
 import com.devjoliveira.jocatalog.services.exceptions.DatabaseException;
 import com.devjoliveira.jocatalog.services.exceptions.ResourceNotFoundException;
@@ -17,9 +18,11 @@ import com.devjoliveira.jocatalog.services.exceptions.ResourceNotFoundException;
 public class ProductService {
 
   private final ProductRepository productRepository;
+  private final CategoryRepository categoryRepository;
 
-  public ProductService(ProductRepository productRepository) {
+  public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
     this.productRepository = productRepository;
+    this.categoryRepository = categoryRepository;
   }
 
   @Transactional(readOnly = true)
@@ -36,10 +39,10 @@ public class ProductService {
 
   @Transactional
   public ProductDTO save(ProductDTO productDTO) {
-    return new ProductDTO(
-        productRepository.save(
-            new Product(null, productDTO.name(), productDTO.description(), productDTO.price(), productDTO.imgUrl(),
-                productDTO.date())));
+    Product product = new Product();
+    copyDtoToEntity(productDTO, product);
+    product = productRepository.save(product);
+    return new ProductDTO(product, product.getCategories());
   }
 
   @Transactional
@@ -47,10 +50,7 @@ public class ProductService {
     var entity = productRepository.findById(id).orElseThrow(
         () -> new ResourceNotFoundException("Product not found."));
 
-    entity.setName(productDTO.name());
-    entity.setDescription(productDTO.description());
-    entity.setPrice(productDTO.price());
-    entity.setImgUrl(productDTO.imgUrl());
+    copyDtoToEntity(productDTO, entity);
 
     productRepository.save(entity);
 
@@ -70,6 +70,24 @@ public class ProductService {
       throw new DatabaseException("Fail in reference integrity");
 
     }
+  }
+
+  private void copyDtoToEntity(ProductDTO productDTO, Product entity) {
+    entity.setName(productDTO.name());
+    entity.setDescription(productDTO.description());
+    entity.setPrice(productDTO.price());
+    entity.setImgUrl(productDTO.imgUrl());
+    entity.setDate(productDTO.date());
+
+    entity.getCategories().clear();
+
+    if (productDTO.categories() != null) {
+      productDTO.categories().forEach(categoryDTO -> {
+        var category = categoryRepository.getReferenceById(categoryDTO.id());
+        entity.getCategories().add(category);
+      });
+    }
+
   }
 
 }
