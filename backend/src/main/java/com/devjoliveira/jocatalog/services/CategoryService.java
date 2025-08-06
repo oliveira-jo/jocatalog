@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devjoliveira.jocatalog.dtos.CategoryDTO;
 import com.devjoliveira.jocatalog.entities.Category;
 import com.devjoliveira.jocatalog.repositories.CategoryRepository;
+import com.devjoliveira.jocatalog.services.exceptions.EntityNotFoundException;
 
 @Service
 public class CategoryService {
@@ -27,7 +28,7 @@ public class CategoryService {
   public CategoryDTO findById(Long id) {
     return categoryRepository.findById(id)
         .map(CategoryDTO::new)
-        .orElseThrow(() -> new RuntimeException("Object not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Category not found."));
   }
 
   @Transactional
@@ -38,24 +39,22 @@ public class CategoryService {
 
   @Transactional
   public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
-    var category = categoryRepository.getReferenceById(id);
-
-    if (category == null) {
-      throw new RuntimeException("Object not found");
-    }
+    var category = categoryRepository.findById(id).orElseThrow(
+        () -> new EntityNotFoundException("Category not found."));
 
     category.setName(categoryDTO.name());
-    var newCat = categoryRepository.save(category);
 
-    return new CategoryDTO(newCat);
+    categoryRepository.save(category);
+
+    return new CategoryDTO(category);
   }
 
   @Transactional
   public void delete(Long id) {
-    if (!categoryRepository.existsById(id)) {
-      throw new RuntimeException("Object not found");
-    }
-    categoryRepository.deleteById(id);
+    var category = categoryRepository.findById(id).orElseThrow(
+        () -> new EntityNotFoundException("Category not found."));
+
+    categoryRepository.deleteById(category.getId());
   }
 
 }
