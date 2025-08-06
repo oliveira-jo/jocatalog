@@ -111,6 +111,10 @@ public class Product {
     return updatedAt;
   }
 
+  public Set<Category> getCategories() {
+    return categories;
+  }
+
   @PrePersist
   public void prePersist() {
     createdAt = Instant.now();
