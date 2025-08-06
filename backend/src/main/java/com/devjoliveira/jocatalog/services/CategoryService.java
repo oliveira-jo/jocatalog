@@ -2,13 +2,16 @@ package com.devjoliveira.jocatalog.services;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devjoliveira.jocatalog.dtos.CategoryDTO;
 import com.devjoliveira.jocatalog.entities.Category;
 import com.devjoliveira.jocatalog.repositories.CategoryRepository;
-import com.devjoliveira.jocatalog.services.exceptions.EntityNotFoundException;
+import com.devjoliveira.jocatalog.services.exceptions.DatabaseException;
+import com.devjoliveira.jocatalog.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class CategoryService {
@@ -28,7 +31,7 @@ public class CategoryService {
   public CategoryDTO findById(Long id) {
     return categoryRepository.findById(id)
         .map(CategoryDTO::new)
-        .orElseThrow(() -> new EntityNotFoundException("Category not found."));
+        .orElseThrow(() -> new ResourceNotFoundException("Category not found."));
   }
 
   @Transactional
@@ -40,7 +43,7 @@ public class CategoryService {
   @Transactional
   public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
     var category = categoryRepository.findById(id).orElseThrow(
-        () -> new EntityNotFoundException("Category not found."));
+        () -> new ResourceNotFoundException("Category not found."));
 
     category.setName(categoryDTO.name());
 
@@ -49,12 +52,19 @@ public class CategoryService {
     return new CategoryDTO(category);
   }
 
-  @Transactional
+  @Transactional(propagation = Propagation.SUPPORTS)
   public void delete(Long id) {
-    var category = categoryRepository.findById(id).orElseThrow(
-        () -> new EntityNotFoundException("Category not found."));
+    if (!categoryRepository.existsById(id)) {
+      throw new ResourceNotFoundException("Resource not found.");
+    }
 
-    categoryRepository.deleteById(category.getId());
+    try {
+      categoryRepository.deleteById(id);
+
+    } catch (DataIntegrityViolationException e) {
+      throw new DatabaseException("Fail in reference integrity");
+
+    }
   }
 
 }
