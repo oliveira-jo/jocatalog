@@ -49,14 +49,6 @@ spring.jpa.show-sql=false
 spring.jpa.properties.hibernate.format_sql=false
 ```
 
-## SQL para seed da base de dados de teste
-```sql
-INSERT INTO tb_category (name, created_At) VALUES ('Livros', NOW());
-INSERT INTO tb_category (name, created_At) VALUES ('Eletrônicos', NOW());
-INSERT INTO tb_category (name, created_At) VALUES ('Computadores', NOW());
-
-```
-
 ## Parâmetros de paginação
 ```java
 @RequestParam(value = "page", defaultValue = "0") Integer page,
