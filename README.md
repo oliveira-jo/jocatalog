@@ -61,3 +61,43 @@ spring.jpa.properties.hibernate.format_sql=false
 @RequestParam(value = "orderBy", defaultValue = "moment") String orderBy,
 @RequestParam(value = "direction", defaultValue = "DESC") String direction
 ```
+
+## Objetos JSON para inserir e atualizar um produto
+
+### Inserir
+```javascript
+{
+  "name": "PS5",
+  "description": "The new generation PS5 video game",
+  "price": 600.0,
+  "imgUrl": "",
+  "date": "2020-07-20T10:00:00Z",
+  "categories": [
+    {
+      "id": 1
+    },
+    {
+      "id": 3
+    }
+  ]
+}
+```
+
+### Atualizar
+```javascript
+{
+  "name": "Updated product name",
+  "description": "Updated product description",
+  "price": 600.0,
+  "imgUrl": "",
+  "date": "2020-07-20T10:00:00Z",
+  "categories": [
+    {
+      "id": 1
+    },
+    {
+      "id": 3
+    }
+  ]
+}
+```
