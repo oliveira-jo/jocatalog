@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devjoliveira.jocatalog.dtos.ProductDTO;
-import com.devjoliveira.jocatalog.entities.Product;
 import com.devjoliveira.jocatalog.tests.Factory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

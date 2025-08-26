@@ -3,6 +3,7 @@ package com.devjoliveira.jocatalog.services;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,29 +21,35 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
+  private final BCryptPasswordEncoder passwordEncoder;
 
-  public UserService(UserRepository UserRepository, RoleRepository roleRepository) {
+  public UserService(UserRepository UserRepository, RoleRepository roleRepository,
+      BCryptPasswordEncoder passwordEncoder) {
     this.userRepository = UserRepository;
     this.roleRepository = roleRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Transactional(readOnly = true)
-  public Page<UserDTO> findAllPaged(Pageable pageable) {
-    return userRepository.findAll(pageable).map(UserDTO::new);
+  public Page<UserMinDTO> findAllPaged(Pageable pageable) {
+    return userRepository.findAll(pageable).map(UserMinDTO::new);
   }
 
   @Transactional(readOnly = true)
-  public UserDTO findById(Long id) {
+  public UserMinDTO findById(Long id) {
     return userRepository.findById(id)
-        .map(entity -> new UserDTO(entity))
+        .map(entity -> new UserMinDTO(entity))
         .orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
   }
 
   @Transactional
   public UserMinDTO save(UserDTO dto) {
     User entity = new User();
+
     copyDtoToEntity(dto, entity);
+    entity.setPassword(passwordEncoder.encode(dto.password()));
     entity = userRepository.save(entity);
+
     return new UserMinDTO(entity);
   }
 
@@ -78,9 +85,6 @@ public class UserService {
     entity.setFirstName(dto.firstName());
     entity.setLastName(dto.lastName());
     entity.setEmail(dto.email());
-
-    // Resolve the password
-    entity.setPassword(null);
 
     entity.getRoles().clear();
 
