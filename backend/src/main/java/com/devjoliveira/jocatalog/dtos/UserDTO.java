@@ -4,10 +4,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.devjoliveira.jocatalog.entities.User;
+import com.devjoliveira.jocatalog.services.validation.UserInsertValid;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+@UserInsertValid
 public record UserDTO(
 
     Long id,

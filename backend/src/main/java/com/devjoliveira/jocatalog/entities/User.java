@@ -3,6 +3,7 @@ package com.devjoliveira.jocatalog.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +23,10 @@ public class User {
   private Long id;
   private String firstName;
   private String lastName;
+
+  @Column(unique = true)
   private String email;
+
   private String password;
 
   @ManyToMany(fetch = FetchType.EAGER) // force to load roles with user for use in security
