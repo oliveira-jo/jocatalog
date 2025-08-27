@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -16,7 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<StandartError> entityNotFound(ResourceNotFoundException e, HttpServletRequest request) {
+  public ResponseEntity<StandartError> entityNotFoundException(ResourceNotFoundException e,
+      HttpServletRequest request) {
     HttpStatus status = HttpStatus.NOT_FOUND;
     StandartError error = new StandartError(
         Instant.now(),
@@ -36,6 +38,22 @@ public class GlobalExceptionHandler {
         "Database exception.",
         e.getMessage(),
         request.getRequestURI());
+    return ResponseEntity.status(status).body(error);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ValidationError> validationException(MethodArgumentNotValidException e,
+      HttpServletRequest request) {
+    HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+    ValidationError error = new ValidationError(
+        Instant.now(),
+        status.value(),
+        "Validation exception.",
+        e.getMessage(),
+        request.getRequestURI(),
+        e.getBindingResult().getFieldErrors().stream()
+            .map(fieldError -> new FieldMessage(fieldError.getField(), fieldError.getDefaultMessage()))
+            .toList());
     return ResponseEntity.status(status).body(error);
   }
 
