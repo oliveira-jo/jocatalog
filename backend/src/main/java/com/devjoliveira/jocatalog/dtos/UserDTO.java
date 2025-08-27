@@ -5,13 +5,16 @@ import java.util.stream.Collectors;
 
 import com.devjoliveira.jocatalog.entities.User;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public record UserDTO(
 
     Long id,
-    String firstName,
-    String lastName,
-    String email,
-    String password,
+    @NotBlank(message = "FirstName is required") String firstName,
+    @NotBlank(message = "LastName is required") String lastName,
+    @Email(message = "Email is Required") String email,
+    @NotBlank(message = "Password is Required") String password,
     Set<RoleDTO> roles) {
 
   public UserDTO(User user) {

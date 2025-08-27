@@ -8,13 +8,18 @@ import java.util.stream.Collectors;
 import com.devjoliveira.jocatalog.entities.Category;
 import com.devjoliveira.jocatalog.entities.Product;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 public record ProductDTO(
     Long id,
-    String name,
-    String description,
-    Double price,
+    @Size(min = 5, max = 60, message = "Name must be between 5 and 60 characters") @NotBlank(message = "Name is required") String name,
+    @NotBlank(message = "Description is required") String description,
+    @Positive(message = "Price must be positive") Double price,
     String imgUrl,
-    Instant date,
+    @PastOrPresent(message = "Date cannot be in the future") Instant date,
     List<CategoryDTO> categories) {
 
   public ProductDTO(Product product) {

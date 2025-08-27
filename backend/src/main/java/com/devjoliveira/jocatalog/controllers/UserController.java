@@ -19,6 +19,8 @@ import com.devjoliveira.jocatalog.dtos.UserDTO;
 import com.devjoliveira.jocatalog.dtos.UserMinDTO;
 import com.devjoliveira.jocatalog.services.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -40,7 +42,7 @@ public class UserController {
   }
 
   @PostMapping
-  public ResponseEntity<UserMinDTO> save(@RequestBody UserDTO dto) {
+  public ResponseEntity<UserMinDTO> save(@Valid @RequestBody UserDTO dto) {
     UserMinDTO min = userService.save(dto);
 
     URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -50,7 +52,7 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<UserMinDTO> change(@PathVariable Long id, @RequestBody UserDTO dto) {
+  public ResponseEntity<UserMinDTO> change(@PathVariable Long id, @Valid @RequestBody UserDTO dto) {
     return ResponseEntity.ok().body(userService.update(id, dto));
   }
 
