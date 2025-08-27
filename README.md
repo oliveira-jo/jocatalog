@@ -9,11 +9,6 @@ This is a project of a simple catalog CRUD and management, that was implemented 
 
 # Resourses back end
 
-## Dependências Maven
-### File pom.xml 
-https://gist.github.com/acenelio/56e6f96a1e8fdb17d46f8b41b4c757fc
-
-
 ## Pagination params
 
 ```java
@@ -126,7 +121,7 @@ INSERT INTO tb_product_category (product_id, category_id) VALUES (25, 3);
 }
 ```
 
-## Seed for User and roles
+## Seed for user and roles
 ```sql
 INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Alex', 'Brown', 'alex@gmail.com', '$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG');
 INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Maria', 'Green', 'maria@gmail.com', '$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG');
@@ -188,6 +183,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserDTO> {
+  @Autowired
+  private UserRepository repository;
 
   @Override
   public void initialize(UserInsertValid ann) {
@@ -198,8 +195,10 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 
     List<FieldMessage> list = new ArrayList<>();
 
-    // Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à
-    // lista
+		// TESTS and add to list case exists
+    if (repository.findByEmail(dto.email()).isPresent()) {
+      list.add(new FieldMessage("email", "Email already exists"));
+    }
 
     for (FieldMessage e : list) {
       context.disableDefaultConstraintViolation();
@@ -209,23 +208,6 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
     return list.isEmpty();
   }
 }
-```
-
-## Change branch master to main on Github
-```
-Commit master!
-
-git checkout -b main
-
-git push -u origin main
-
-git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
-
-Settings -> Branches -> Switch default branch -> main
-
-git push origin --delete master
-
-git branch -a
 ```
 
 ## Configuration files
@@ -284,41 +266,28 @@ spring.jpa.properties.hibernate.format_sql=false
 
 ## Heroku
 
-#### Preparar o projeto para implantação
-- Na pasta raiz do projeto, criar arquivo system.properties com o conteúdo:
+#### Prepar the project for implementation
+- In root project file, create the file system.properties with:
 java.runtime.version=11
-- Mudar o perfil para "prod" e salvar um novo commit
+- Change the profile for "prod" and save with a new commit
 
-#### Implantar o sistema no Heroku
-- Criar app no Heroku e provisionar o banco Postgresql
-- Pegar a string de conexão à base de dados
-- Instanciar um servidor no seu pgAdmin com os dados de conexão
-- Executar o script de criação da base de dados
-- No terminal:
+#### Implements the system on Heroku
+- Create app on Heroku and provision the Postgresql
+
+- Get the connection string 
+- Pegar a string de conexão to the database
+- Instantiate a server in your pgAdmin with the connection data
+- Run the database creation script
+- in terminal:
 ```
 heroku git:remote -a <nome-do-app>
 git remote -v
 git subtree push --prefix backend heroku main
 ```
 
-## Beans para token JWT (Spring Boot 2 apenas)
-```java
-@Bean
-public JwtAccessTokenConverter accessTokenConverter() {
-	JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
-	tokenConverter.setSigningKey("MY-JWT-SECRET");
-	return tokenConverter;
-}
+## Postman
 
-@Bean
-public JwtTokenStore tokenStore() {
-	return new JwtTokenStore(accessTokenConverter());
-}
-```
-
-## Deixando o Postman top
-
-Variáveis:
+Vars:
 - host: http://localhost:8080
 - client-id: dscatalog
 - client-secret: dscatalog123
@@ -326,7 +295,7 @@ Variáveis:
 - password: 123456
 - token: 
 
-Script para atribuir token à variável de ambiente do Postman:
+Script to assign token to Postman environment variable:
 ```js
 if (responseCode.code >= 200 && responseCode.code < 300) {
     var json = JSON.parse(responseBody);
@@ -334,7 +303,7 @@ if (responseCode.code >= 200 && responseCode.code < 300) {
 }
 ```
 
-## Beans para configuração de CORS
+## Beans for CORS config
 ```java
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
@@ -358,7 +327,7 @@ public FilterRegistrationBean<CorsFilter> corsFilter() {
 }	
 ```
 
-## Teste local para CORS
+## CORS Local test
 
 ```js
 fetch("https://seuprojeto.herokuapp.com", {
@@ -395,7 +364,7 @@ fetch("https://seuprojeto.herokuapp.com", {
 </dependency>
 ```
 
-#### Classe de configuração
+#### Configuração class
 ```java
 @Configuration
 @EnableSwagger2
@@ -409,12 +378,12 @@ public class SwaggerConfig {
 }
 ```
 
-#### Configuração adicional para liberar o acesso ao Swagger
+#### Additional configuration to allow access to Swagger
 ```java
 web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html", "/webjars/**");
 ```
 
-## Liberando leitura pública no bucket S3
+## Releasing public readability on the S3 bucket
 
 ```
 {
@@ -431,7 +400,7 @@ web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resour
 }
 ```
 
-## Estrutura de classe de teste de CRUD com MockMvc
+## CRUD Test Class Structure with MockMvc
 
 ```java
 import static org.mockito.ArgumentMatchers.any;
@@ -511,7 +480,7 @@ public class ProductResourceTests {
 }
 ```
 
-## Variáveis de ambiente básicas depois de adicionar segurança
+## Basic environment variables after adding security
 
 ```
 spring.profiles.active=${APP_PROFILE:test}
