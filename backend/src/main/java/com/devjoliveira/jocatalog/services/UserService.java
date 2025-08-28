@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devjoliveira.jocatalog.dtos.UserDTO;
-import com.devjoliveira.jocatalog.dtos.UserMinDTO;
+import com.devjoliveira.jocatalog.dtos.UserInsertDTO;
+import com.devjoliveira.jocatalog.dtos.UserUpdateDTO;
 import com.devjoliveira.jocatalog.entities.User;
 import com.devjoliveira.jocatalog.repositories.RoleRepository;
 import com.devjoliveira.jocatalog.repositories.UserRepository;
@@ -31,30 +32,30 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public Page<UserMinDTO> findAllPaged(Pageable pageable) {
-    return userRepository.findAll(pageable).map(UserMinDTO::new);
+  public Page<UserDTO> findAllPaged(Pageable pageable) {
+    return userRepository.findAll(pageable).map(UserDTO::new);
   }
 
   @Transactional(readOnly = true)
-  public UserMinDTO findById(Long id) {
+  public UserDTO findById(Long id) {
     return userRepository.findById(id)
-        .map(entity -> new UserMinDTO(entity))
+        .map(entity -> new UserDTO(entity))
         .orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
   }
 
   @Transactional
-  public UserMinDTO save(UserDTO dto) {
+  public UserDTO save(UserInsertDTO dto) {
     User entity = new User();
 
     copyDtoToEntity(dto, entity);
-    entity.setPassword(passwordEncoder.encode(dto.password()));
+    entity.setPassword(passwordEncoder.encode(dto.getPassword()));
     entity = userRepository.save(entity);
 
-    return new UserMinDTO(entity);
+    return new UserDTO(entity);
   }
 
   @Transactional
-  public UserMinDTO update(Long id, UserDTO dto) {
+  public UserDTO update(Long id, UserUpdateDTO dto) {
     var entity = userRepository.findById(id).orElseThrow(
         () -> new ResourceNotFoundException("Resource Not Found."));
 
@@ -62,7 +63,7 @@ public class UserService {
 
     userRepository.save(entity);
 
-    return new UserMinDTO(entity);
+    return new UserDTO(entity);
   }
 
   @Transactional(propagation = Propagation.SUPPORTS)
@@ -82,15 +83,15 @@ public class UserService {
 
   private void copyDtoToEntity(UserDTO dto, User entity) {
 
-    entity.setFirstName(dto.firstName());
-    entity.setLastName(dto.lastName());
-    entity.setEmail(dto.email());
+    entity.setFirstName(dto.getFirstName());
+    entity.setLastName(dto.getLastName());
+    entity.setEmail(dto.getEmail());
 
     entity.getRoles().clear();
 
-    if (dto.roles() != null) {
+    if (dto.getRoles() != null) {
 
-      dto.roles().forEach(roleDTO -> {
+      dto.getRoles().forEach(roleDTO -> {
         var role = roleRepository.getReferenceById(roleDTO.id());
         entity.getRoles().add(role);
       });

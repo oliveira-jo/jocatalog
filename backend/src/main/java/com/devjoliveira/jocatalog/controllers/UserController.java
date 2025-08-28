@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.devjoliveira.jocatalog.dtos.UserDTO;
-import com.devjoliveira.jocatalog.dtos.UserMinDTO;
+import com.devjoliveira.jocatalog.dtos.UserInsertDTO;
+import com.devjoliveira.jocatalog.dtos.UserUpdateDTO;
 import com.devjoliveira.jocatalog.services.UserService;
 
 import jakarta.validation.Valid;
@@ -32,27 +33,27 @@ public class UserController {
   }
 
   @GetMapping
-  public ResponseEntity<Page<UserMinDTO>> findAll(Pageable pageable) {
+  public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
     return ResponseEntity.ok().body(userService.findAllPaged(pageable));
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserMinDTO> findById(@PathVariable Long id) {
+  public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
     return ResponseEntity.ok().body(userService.findById(id));
   }
 
   @PostMapping
-  public ResponseEntity<UserMinDTO> save(@Valid @RequestBody UserDTO dto) {
-    UserMinDTO min = userService.save(dto);
+  public ResponseEntity<UserDTO> save(@Valid @RequestBody UserInsertDTO dto) {
+    UserDTO min = userService.save(dto);
 
     URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-        .buildAndExpand(min.id()).toUri();
+        .buildAndExpand(min.getId()).toUri();
 
     return ResponseEntity.created(uri).body(min);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<UserMinDTO> change(@PathVariable Long id, @Valid @RequestBody UserDTO dto) {
+  public ResponseEntity<UserDTO> change(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
     return ResponseEntity.ok().body(userService.update(id, dto));
   }
 
