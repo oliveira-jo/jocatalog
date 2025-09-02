@@ -423,3 +423,16 @@ security.oauth2.client.client-secret=${CLIENT_SECRET:dscatalog123}
 jwt.secret=${JWT_SECRET:MY-JWT-SECRET}
 jwt.duration=${JWT_DURATION:86400}
 ```
+
+## Postman configuration of token var
+- new environment
+- Include scruipt for requist login
+
+```` java
+if (responseCode.code >= 200 && responseCode.code < 300) {
+    var json = JSON.parse(responseBody);
+    postman.setEnvironmentVariable('token', json.access_token);
+}
+````
+
+
