@@ -1,7 +1,11 @@
 package com.devjoliveira.jocatalog.entities;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +20,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_user")
-public class User {
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,6 +90,24 @@ public class User {
 
   public Set<Role> getRoles() {
     return roles;
+  }
+
+  public void addRole(Role role) {
+    roles.add(role);
+  }
+
+  public Boolean hasRole(String roleName) {
+    return roles.stream().anyMatch(role -> role.getAuthority().equals(roleName));
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return roles;
+  }
+
+  @Override
+  public String getUsername() {
+    return email;
   }
 
   @Override

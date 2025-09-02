@@ -190,6 +190,10 @@ spring.jpa.show-sql=false
 spring.jpa.properties.hibernate.format_sql=false
 ```
 
+## Checklist Spring Security
+![DomainSpringSecurity](/backend/assets/spring-security-model.png)
+
+
 ## Heroku
 
 #### Prepar the project for implementation
