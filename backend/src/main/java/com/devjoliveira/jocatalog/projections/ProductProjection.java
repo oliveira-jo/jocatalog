@@ -1,8 +1,6 @@
 package com.devjoliveira.jocatalog.projections;
 
-public interface ProductProjection {
-
-  Long getId();
+public interface ProductProjection extends IdProjection<Long> {
 
   String getName();
 

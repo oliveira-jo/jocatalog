@@ -35,6 +35,7 @@ public class ProductService {
    * This method implements a search with filter by name and categories
    * and resolve the n + 1 problem.
    */
+  @SuppressWarnings("unchecked")
   @Transactional(readOnly = true)
   public Page<ProductDTO> findAllPaged(String categoryId, String name, Pageable pageable) {
 
@@ -54,7 +55,7 @@ public class ProductService {
     List<Product> products = productRepository.searchProductsWithCategories(productIds);
 
     // replace or ORDER a page ordered put this order to (products desordered)
-    products = Util.replace(page.getContent(), products);
+    products = (List<Product>) Util.replace(page.getContent(), products);
 
     // transform to DTOs
     List<ProductDTO> dtos = products.stream().map(p -> new ProductDTO(p, p.getCategories())).toList();
