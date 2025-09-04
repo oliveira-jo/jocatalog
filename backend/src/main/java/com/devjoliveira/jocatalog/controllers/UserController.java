@@ -45,7 +45,6 @@ public class UserController {
     return ResponseEntity.ok().body(userService.findById(id));
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   @PostMapping
   public ResponseEntity<UserDTO> save(@Valid @RequestBody UserInsertDTO dto) {
     UserDTO min = userService.save(dto);

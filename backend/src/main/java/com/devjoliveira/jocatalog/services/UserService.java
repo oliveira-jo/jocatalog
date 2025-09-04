@@ -48,6 +48,11 @@ public class UserService {
     User entity = new User();
 
     copyDtoToEntity(dto, entity);
+
+    // Every new user will have the ROLE_OPERATOR role
+    entity.getRoles().clear();
+    entity.getRoles().add(roleRepository.findByAuthority("ROLE_OPERATOR"));
+
     entity.setPassword(passwordEncoder.encode(dto.getPassword()));
     entity = userRepository.save(entity);
 
