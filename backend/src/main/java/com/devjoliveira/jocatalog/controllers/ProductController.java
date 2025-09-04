@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.devjoliveira.jocatalog.dtos.ProductDTO;
-import com.devjoliveira.jocatalog.projections.ProductProjection;
 import com.devjoliveira.jocatalog.services.ProductService;
 
 import jakarta.validation.Valid;
@@ -34,11 +33,11 @@ public class ProductController {
   }
 
   @GetMapping
-  public ResponseEntity<Page<ProductProjection>> findAll(
+  public ResponseEntity<Page<ProductDTO>> findAll(
       @RequestParam(value = "name", defaultValue = "") String name,
       @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
       Pageable pageable) {
-    return ResponseEntity.ok().body(productService.findAllPaged(name, categoryId, pageable));
+    return ResponseEntity.ok().body(productService.findAllPaged(categoryId, name, pageable));
   }
 
   @GetMapping("/{id}")

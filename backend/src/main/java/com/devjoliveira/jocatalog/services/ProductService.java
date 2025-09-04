@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,6 +18,7 @@ import com.devjoliveira.jocatalog.repositories.CategoryRepository;
 import com.devjoliveira.jocatalog.repositories.ProductRepository;
 import com.devjoliveira.jocatalog.services.exceptions.DatabaseException;
 import com.devjoliveira.jocatalog.services.exceptions.ResourceNotFoundException;
+import com.devjoliveira.jocatalog.utils.Util;
 
 @Service
 public class ProductService {
@@ -29,8 +31,12 @@ public class ProductService {
     this.categoryRepository = categoryRepository;
   }
 
+  /**
+   * This method implements a search with filter by name and categories
+   * and resolve the n + 1 problem.
+   */
   @Transactional(readOnly = true)
-  public Page<ProductProjection> findAllPaged(String name, String categoryId, Pageable pageable) {
+  public Page<ProductDTO> findAllPaged(String categoryId, String name, Pageable pageable) {
 
     List<Long> categoryIds = Arrays.asList();
 
@@ -38,7 +44,24 @@ public class ProductService {
       categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
     }
 
-    return productRepository.searchProducts(categoryIds, name, pageable);
+    // aux search for get on hand products ids
+    Page<ProductProjection> page = productRepository.searchProducts(categoryIds, name.trim(), pageable);
+
+    // get products ids
+    List<Long> productIds = page.map(x -> x.getId()).toList();
+
+    // get products searching for products ids - ** desordered result **
+    List<Product> products = productRepository.searchProductsWithCategories(productIds);
+
+    // replace or ORDER a page ordered put this order to (products desordered)
+    products = Util.replace(page.getContent(), products);
+
+    // transform to DTOs
+    List<ProductDTO> dtos = products.stream().map(p -> new ProductDTO(p, p.getCategories())).toList();
+
+    // create page implementation from DTOs
+    return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
+
   }
 
   @Transactional(readOnly = true)
