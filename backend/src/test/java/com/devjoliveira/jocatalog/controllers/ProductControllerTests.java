@@ -61,7 +61,8 @@ public class ProductControllerTests {
     productDTO = Factory.createProductDTO();
     page = new PageImpl<>(List.of(productDTO));
 
-    when(productServiceMock.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
+    when(productServiceMock.findAllPaged(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(),
+        ArgumentMatchers.any())).thenReturn(page);
 
     when(productServiceMock.findById(existingId)).thenReturn(productDTO);
     when(productServiceMock.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
