@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.devjoliveira.jocatalog.dtos.ProductDTO;
+import com.devjoliveira.jocatalog.projections.ProductProjection;
 import com.devjoliveira.jocatalog.services.ProductService;
 
 import jakarta.validation.Valid;
@@ -32,8 +34,11 @@ public class ProductController {
   }
 
   @GetMapping
-  public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
-    return ResponseEntity.ok().body(productService.findAllPaged(pageable));
+  public ResponseEntity<Page<ProductProjection>> findAll(
+      @RequestParam(value = "name", defaultValue = "") String name,
+      @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
+      Pageable pageable) {
+    return ResponseEntity.ok().body(productService.findAllPaged(name, categoryId, pageable));
   }
 
   @GetMapping("/{id}")

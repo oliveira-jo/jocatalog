@@ -1,5 +1,8 @@
 package com.devjoliveira.jocatalog.services;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devjoliveira.jocatalog.dtos.ProductDTO;
 import com.devjoliveira.jocatalog.entities.Product;
+import com.devjoliveira.jocatalog.projections.ProductProjection;
 import com.devjoliveira.jocatalog.repositories.CategoryRepository;
 import com.devjoliveira.jocatalog.repositories.ProductRepository;
 import com.devjoliveira.jocatalog.services.exceptions.DatabaseException;
@@ -26,8 +30,15 @@ public class ProductService {
   }
 
   @Transactional(readOnly = true)
-  public Page<ProductDTO> findAllPaged(Pageable pageable) {
-    return productRepository.findAll(pageable).map(ProductDTO::new);
+  public Page<ProductProjection> findAllPaged(String name, String categoryId, Pageable pageable) {
+
+    List<Long> categoryIds = Arrays.asList();
+
+    if (!categoryId.equals("0")) {
+      categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+    }
+
+    return productRepository.searchProducts(categoryIds, name, pageable);
   }
 
   @Transactional(readOnly = true)

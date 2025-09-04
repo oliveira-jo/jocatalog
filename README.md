@@ -7,6 +7,10 @@ This is a project of a simple catalog CRUD and management, that was implemented 
 ## Project Model
 ![Project Model](/backend/assets/model-jo-catalog.png)
 
+## Frontend Prototype 
+https://www.figma.com/file/cNa2l3TqZXxbU6NBDPruNw/BDS-DSCatalog
+
+
 # Resourses back end
 
 ## Pagination params
@@ -434,5 +438,16 @@ if (responseCode.code >= 200 && responseCode.code < 300) {
     postman.setEnvironmentVariable('token', json.access_token);
 }
 ````
+
+### Search in root SQL
+````SQL
+SELECT DISTINCT tb_product.id, tb_product.name
+FROM tb_product
+INNER JOIN tb_product_category ON tb_product.id = tb_product_category.product_id
+WHERE tb_product_category.category_id IN  (1,3)
+AND LOWER ( tb_product.name ) LIKE '%ma%'
+ORDER BY tb_product.name
+````
+
 
 

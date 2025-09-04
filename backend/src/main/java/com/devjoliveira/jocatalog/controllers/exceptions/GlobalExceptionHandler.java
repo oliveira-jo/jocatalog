@@ -2,6 +2,7 @@ package com.devjoliveira.jocatalog.controllers.exceptions;
 
 import java.time.Instant;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,6 +32,19 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(DatabaseException.class)
   public ResponseEntity<StandartError> databaseException(DatabaseException e, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    StandartError error = new StandartError(
+        Instant.now(),
+        status.value(),
+        "Database exception.",
+        e.getMessage(),
+        request.getRequestURI());
+    return ResponseEntity.status(status).body(error);
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<StandartError> dataIntegrityViolationException(DataIntegrityViolationException e,
+      HttpServletRequest request) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
     StandartError error = new StandartError(
         Instant.now(),

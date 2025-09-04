@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devjoliveira.jocatalog.dtos.ProductDTO;
 import com.devjoliveira.jocatalog.tests.Factory;
+import com.devjoliveira.jocatalog.util.TokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -30,9 +31,14 @@ public class ProductControllerIT {
   @Autowired
   ObjectMapper objectMapper;
 
+  @Autowired
+  private TokenUtil tokenUtil;
+
   private Long existingId;
   private Long nonExistingId;
   private Long totalProducts;
+
+  private String username, password, bearerToken;
 
   @BeforeEach
   void setUp() throws Exception {
@@ -40,6 +46,11 @@ public class ProductControllerIT {
     existingId = 1L;
     nonExistingId = 1000L;
     totalProducts = 25L;
+
+    username = "maria@gmail.com";
+    password = "123456";
+
+    bearerToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
 
   }
 
@@ -66,6 +77,7 @@ public class ProductControllerIT {
     String expectedName = productDTO.name();
 
     ResultActions result = mockMvc.perform(put("/products/{id}", existingId)
+        .header("Authorization", "Bearer " + bearerToken)
         .content(jsonBody)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON));
@@ -83,6 +95,7 @@ public class ProductControllerIT {
     String jsonBody = objectMapper.writeValueAsString(productDTO);
 
     ResultActions result = mockMvc.perform(put("/products/{id}", nonExistingId)
+        .header("Authorization", "Bearer " + bearerToken)
         .content(jsonBody)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON));
