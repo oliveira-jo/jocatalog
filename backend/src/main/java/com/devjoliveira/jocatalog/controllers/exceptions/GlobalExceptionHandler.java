@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.devjoliveira.jocatalog.services.exceptions.DatabaseException;
+import com.devjoliveira.jocatalog.services.exceptions.EmailException;
 import com.devjoliveira.jocatalog.services.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,6 +69,20 @@ public class GlobalExceptionHandler {
         e.getBindingResult().getFieldErrors().stream()
             .map(fieldError -> new FieldMessage(fieldError.getField(), fieldError.getDefaultMessage()))
             .toList());
+    return ResponseEntity.status(status).body(error);
+  }
+
+  @ExceptionHandler(EmailException.class)
+  public ResponseEntity<StandartError> email(EmailException e, HttpServletRequest request) {
+
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    StandartError error = new StandartError(
+        Instant.now(),
+        status.value(),
+        "Email exception.",
+        e.getMessage(),
+        request.getRequestURI());
+
     return ResponseEntity.status(status).body(error);
   }
 

@@ -1,41 +1,64 @@
 package com.devjoliveira.jocatalog.services;
 
-import java.util.List;
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.devjoliveira.jocatalog.entities.Role;
+import org.springframework.transaction.annotation.Transactional;
+import com.devjoliveira.jocatalog.dtos.EmailDTO;
+import com.devjoliveira.jocatalog.entities.PasswordRecover;
 import com.devjoliveira.jocatalog.entities.User;
-import com.devjoliveira.jocatalog.projections.UserDetailsProjection;
+import com.devjoliveira.jocatalog.repositories.PasswordRecoverRepository;
 import com.devjoliveira.jocatalog.repositories.UserRepository;
+import com.devjoliveira.jocatalog.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthService {
+
+  @Value("${email.password-recover.token.minutes}")
+  private Long tokenMinutes;
+
+  @Value("${email.password-recover.uri}")
+  private String recoverUri;
 
   private final UserRepository userRepository;
 
-  public AuthService(UserRepository userRepository) {
+  private final PasswordRecoverRepository recoverRepository;
+
+  private final EmailService emailService;
+
+  public AuthService(UserRepository userRepository, PasswordRecoverRepository recoverRepository,
+      EmailService emailService) {
     this.userRepository = userRepository;
+    this.recoverRepository = recoverRepository;
+    this.emailService = emailService;
   }
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    List<UserDetailsProjection> result = userRepository.searchUserAndRolesByEmail(username);
-    if (result.isEmpty()) {
-      throw new UsernameNotFoundException("Email not found");
+  @Transactional
+  public void createRecoverToken(EmailDTO body) {
+
+    Optional<User> user = userRepository.findByEmail(body.email());
+
+    if (user.isEmpty()) {
+      throw new ResourceNotFoundException("Mail not found");
     }
 
-    User user = new User();
-    user.setEmail(username);
-    user.setPassword(result.get(0).getPassword());
+    String token = UUID.randomUUID().toString();
 
-    result.forEach(
-        role -> user.getRoles().add(new Role(role.getRoleId(), role.getAuthority())));
+    PasswordRecover recover = new PasswordRecover(
+        null,
+        token,
+        body.email(),
+        Instant.now().plusSeconds(tokenMinutes * 60L));
 
-    return user;
+    recover = recoverRepository.save(recover);
+
+    String textBody = "Acesse o link para definir uma nova senha: \n\n"
+        + recoverUri + token + ". validade de " + tokenMinutes + " Minutos";
+
+    emailService.sendEmail(body.email(), "RECUPERAÇÃO DE SENHA", textBody);
 
   }
 
