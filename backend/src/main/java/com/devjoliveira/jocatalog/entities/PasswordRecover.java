@@ -26,6 +26,9 @@ public class PasswordRecover {
   @Column(nullable = false)
   private Instant expiration;
 
+  public PasswordRecover() {
+  }
+
   public PasswordRecover(Long id, String token, String email, Instant expiration) {
     this.id = id;
     this.token = token;
