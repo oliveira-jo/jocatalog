@@ -1,6 +1,8 @@
 package com.devjoliveira.jocatalog.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devjoliveira.jocatalog.dtos.EmailDTO;
 import com.devjoliveira.jocatalog.dtos.NewPasswordDTO;
+import com.devjoliveira.jocatalog.dtos.UserDTO;
 import com.devjoliveira.jocatalog.services.AuthService;
 
 import jakarta.validation.Valid;
@@ -34,6 +37,13 @@ public class AuthController {
   public ResponseEntity<Void> saveNewPassword(@Valid @RequestBody NewPasswordDTO body) {
     authService.saveNewPassword(body);
     return ResponseEntity.noContent().build();
+
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
+  @GetMapping("/me")
+  public ResponseEntity<UserDTO> findMe() {
+    return ResponseEntity.ok().body(authService.findMe());
 
   }
 

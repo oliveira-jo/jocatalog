@@ -6,12 +6,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devjoliveira.jocatalog.dtos.EmailDTO;
 import com.devjoliveira.jocatalog.dtos.NewPasswordDTO;
+import com.devjoliveira.jocatalog.dtos.UserDTO;
 import com.devjoliveira.jocatalog.entities.PasswordRecover;
 import com.devjoliveira.jocatalog.entities.User;
 import com.devjoliveira.jocatalog.repositories.PasswordRecoverRepository;
@@ -83,6 +88,22 @@ public class AuthService {
 
     user = userRepository.save(user);
 
+  }
+
+  @Transactional(readOnly = true)
+  public UserDTO findMe() {
+    return new UserDTO(authenticated());
+  }
+
+  protected User authenticated() {
+    try {
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
+      String username = jwtPrincipal.getClaim("username");
+      return userRepository.findByEmail(username).get();
+    } catch (Exception e) {
+      throw new UsernameNotFoundException("Invalid user");
+    }
   }
 
 }
