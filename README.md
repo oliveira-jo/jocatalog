@@ -19,7 +19,7 @@ https://www.figma.com/file/cNa2l3TqZXxbU6NBDPruNw/BDS-DSCatalog
 @RequestParam(value = "page", defaultValue = "0") Integer page,
 @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 @RequestParam(value = "orderBy", defaultValue = "moment") String orderBy,
-@RequestParam(value = "direction", defaultValue = "DESC") String direction)
+@RequestParam(value = "direction", defaultValue = "DESC") String direction
 ```
 
 ## JSON product insert and update
