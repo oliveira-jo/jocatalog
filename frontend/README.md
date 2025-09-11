@@ -4,15 +4,15 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Made Check list
 
-[x] Header (public)
-[x] Home (public)
-[x] Catalogo list (public)
-[ ] Login (public)
-[ ] Register (public)
-[x] Catalogo list for (admin)
-[ ] Create Product (admin)
-[ ] Update Product (admin)
-[ ] Delete Product (admin)
+* [x] Header (public)
+* [x] Home (public)
+* [x] Catalogo list (public)
+* [ ] Login (public)
+* [ ] Register (public)
+* [x] Catalogo list for (admin)
+* [ ] Create Product (admin)
+* [ ] Update Product (admin)
+* [ ] Delete Product (admin)
 
 ## Development server
 
