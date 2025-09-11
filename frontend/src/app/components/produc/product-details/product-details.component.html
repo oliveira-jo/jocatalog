@@ -1,0 +1,38 @@
+<div class="container">
+
+  <div class="d-flex justify-content-between m-2">
+    <div>
+      <button class="btn btn-outline-primary btn-lg" [routerLink]="['/products']">
+        <i class="fa fa-plus"></i>
+        Voltar
+      </button>
+    </div>
+  </div>
+
+  <div class="row border rounded p-5">
+    <div class="col-sm-6 mb-3 mb-sm-0">
+      <div class="card border-0">
+        <img [src]="product.imgUrl" style="width: 20rem;" alt="...">
+      </div>
+      <div class="card-body">
+        <h3 class="card-text"><strong> {{product.name}} </strong></h3>
+        <h4 class="card-text"> R$ {{product.price}} </h4>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Descrição</h5>
+          <p class="card-text">{{product.description}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+</div>

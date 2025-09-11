@@ -1,0 +1,113 @@
+<div class="container">
+  <div class="card  m-5">
+    <!-- Header -->
+    <div class="card-header">
+      <h4> Editar Produto </h4>
+    </div>
+    <!-- form -->
+    <div class="card-body">
+      <form novalidate (ngSubmit)="saveProduct()" [formGroup]="productForm">
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label m-1" for="name"> Nome </label>
+          <div class="col-md-8">
+            <input class="form-control" type="text" id="name" name="name" placeholder="Type a subjct of product"
+              formControlName="name">
+            <div class="text-danger" *ngIf="productForm.controls['name'].invalid && 
+                  (productForm.controls['name'].touched || productForm.controls['subject'].dirty)">
+              <span *ngIf="productForm.controls['name'].errors?.['required']"> Campo é obrigatório!</span>
+              <span *ngIf="productForm.controls['name'].errors?.['minlength']"> Mínimo 3 caracteres!</span>
+              <span *ngIf="productForm.controls['name'].errors?.['maxlength']"> Máximo 50 caracteres!</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label" for="description"> Descrição </label>
+          <div class="col-md-8">
+            <textarea class="form-control m-2" name="description" id="description" rows="10"
+              placeholder="Type a tickets description" formControlName="description">
+            </textarea>
+            <div class="text-danger" *ngIf="productForm.controls['description'].invalid && 
+                (productForm.controls['description'].touched || productForm.controls['description'].dirty)">
+              <span *ngIf="productForm.controls['description'].errors?.['required']"> Campo é obrigatório!</span>
+              <span *ngIf="productForm.controls['description'].errors?.['minlength']"> Mínimo 3 caracteres!</span>
+              <span *ngIf="productForm.controls['description'].errors?.['maxlength']"> Máximo 1000 caracteres!</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label m-1" for="price"> Preço </label>
+          <div class="col-md-8">
+            <input class="form-control" type="text" id="price" name="price" placeholder="Type a price of product"
+              formControlName="price">
+            <div class="text-danger" *ngIf="productForm.controls['price'].invalid && 
+                  (productForm.controls['price'].touched || productForm.controls['price'].dirty)">
+              <span *ngIf="productForm.controls['price'].errors?.['required']"> Campo é obrigatório!</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label m-1" for="imgUrl"> Imagem Url </label>
+          <div class="col-md-8">
+            <input class="form-control" type="text" id="imgUrl" name="imgUrl" placeholder="Type a imgUrl of product"
+              formControlName="imgUrl">
+            <div class="text-danger" *ngIf="productForm.controls['imgUrl'].invalid && 
+                  (productForm.controls['imgUrl'].touched || productForm.controls['imgUrl'].dirty)">
+              <span *ngIf="productForm.controls['imgUrl'].errors?.['required']"> Campo é obrigatório!</span>
+              <span *ngIf="productForm.controls['imgUrl'].errors?.['minlength']"> Mínimo 3 caracteres!</span>
+              <span *ngIf="productForm.controls['imgUrl'].errors?.['maxlength']"> Máximo 50 caracteres!</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row mt-4">
+          <label class="col-md-2 col-form-label" for="description"> Status </label>
+          <div class="col-md-8">
+            <!-- checkbox status -->
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="status" name="status" formControlName="status"
+                value="IN_PROGRESS" />
+              <label class="form-check-label" for="inlineCheckbox1">Processando</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="status" name="status" formControlName="status"
+                value="AWAITING_CUSTOMER_ANSWER" />
+              <label class="form-check-label" for="inlineCheckbox1">Aguardando Cliente</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="status" name="status" formControlName="status"
+                value="RESOLVED" />
+              <label class="form-check-label" for="inlineCheckbox3">Resolvido</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="status" name="status" formControlName="status"
+                value="CANCELLED" />
+              <label class="form-check-label" for="inlineCheckbox2">Cancelado</label>
+            </div>
+          </div>
+        </div>
+        <!-- actions -->
+        <div class="form-group row mt-4">
+          <div class="offset-md-2 col-md-6">
+            <button class="btn btn-primary m-2" type="submit"
+              [title]="productForm.valid ? 'Salvar' : 'Desabilitade até validar campos' "
+              [disabled]="!productForm.valid">
+              Salvar
+            </button>
+            <button class="btn btn-outline-secondary m-2" title="cancelar" [routerLink]="['/products']">
+              Cancelar
+            </button>
+            <button class="btn btn-outline-danger m-2" type="button" title="Excluir o produto"
+              (click)="deleteProduct()">
+              Excluir
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+  <!-- Alert -->
+  <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="errorMessage">
+    <strong> {{errorMessage}} </strong>
+    <button class="btn-close" data-bs-dismiss="alert" aria-label="Close" (click)="closeAlert()"></button>
+  </div>
+</div>

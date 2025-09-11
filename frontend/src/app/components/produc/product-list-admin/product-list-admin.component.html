@@ -1,0 +1,53 @@
+<div class="container">
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <div class="d-flex justify-content-between m-2">
+        <div>
+          <strong>
+            <h4> Produtos </h4>
+          </strong>
+        </div>
+        <div>
+          <button class="btn btn-primary" [routerLink]="['/products/create']">
+            <i class="fa fa-plus"></i>
+            Novo Produto
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @for (product of products; track $index) {
+  <div class="card mb-3">
+    <div class="row g-0">
+      <div class="col-md-2">
+        <img class="img-thumbnail" [src]="product.imgUrl" alt="Produto">
+      </div>
+      <div class="col-md-7 mb-5">
+        <div class="card-body">
+          <h5 class="card-title"> <strong> {{product.name}} </strong></h5>
+          <p class="card-text">R$ {{product.price}}</p>
+          @for (category of product.categories; track $index) {
+          <button class="btn btn-secondary btn-sm m-2">
+            {{category.name}}
+          </button>
+          }
+        </div>
+      </div>
+      <div class="col-md-3 d-flex flex-column mb-3 mt-4">
+        <button class="btn btn-outline-secondary m-2" [routerLink]="['/products', product.id , 'details']">
+          <i class="fa fa-eye">detalhes</i>
+        </button>
+        <button class="btn btn-outline-secondary m-2" [routerLink]="['/products', product.id , 'update']">
+          <i class="fa fa-edit">editar</i>
+        </button>
+        <button class="btn btn-outline-danger  m-2" (click)="deleteProduct(product.id!)">
+          <i class="fa fa-trash">excluir</i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+  }
+</div>

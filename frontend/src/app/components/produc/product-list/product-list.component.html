@@ -1,0 +1,35 @@
+<div class="container">
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <div class="d-flex justify-content-between m-2">
+        <div>
+          <strong>
+            <h4> Catálogo de Produtos </h4>
+          </strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+
+    @for (product of products; track $index) {
+
+    <div class="col">
+      <div class="card">
+        <img class="img-thumbnail" [src]="product.imgUrl" alt="Produto">
+        <div class="card-body">
+          <h5 class="card-title">{{product.name}}</h5>
+          <p class="card-text"> R$ {{product.price}} </p>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm m-2" [routerLink]="['/products', product.id , 'details']">
+          <i class="fa fa-eye">detalhes</i>
+        </button>
+      </div>
+    </div>
+    }
+
+  </div>
+
+</div>
