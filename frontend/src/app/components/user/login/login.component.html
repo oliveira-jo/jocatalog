@@ -1,1 +1,45 @@
-<p>login works!</p>
+<div class="container">
+  <div class="card p-4 m-4">
+
+
+
+    <!-- Form -->
+    <form [formGroup]="loginForm">
+      <!-- <img class="mb-4" src="/favicon.ico" alt="" width="72" height="57"> -->
+
+      <h2>Login</h2>
+
+      <!-- header -->
+      <div class="form-floating">
+        <input class="form-control" type="text" id="username" name="username" placeholder="name@example.com"
+          formControlName="username">
+        <label for="floatingInput">Email:</label>
+      </div>
+      <div class="form-floating">
+        <input class="form-control" type="password" id="password" name="password" placeholder="Password"
+          formControlName="password">
+        <label for="floatingPassword">Senha:</label>
+      </div>
+      <div class="checkbox mb-3"> </div>
+      <!-- button  -->
+      <button class="w-100 btn btn-lg btn-primary" type="submit" (click)="login()"
+        [title]="loginForm.valid ? 'Logar' : 'Desabilitade até validar campos' " [disabled]="!loginForm.valid">
+        Logar
+      </button>
+      <div class="checkbox mb-2">
+      </div>
+      <button class="w-100 btn btn-lg btn-outline-secondary" title="cancelar" [routerLink]="['/home']">
+        Cancelar
+      </button>
+      <div class="checkbox mb-2"> </div>
+      <p class="mt-5 mb-3 text-muted">&copy; 2025–2030</p>
+    </form>
+
+  </div>
+
+  <!-- Alert   -->
+  <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="errorMessage">
+    <strong> {{errorMessage}} </strong>
+    <button class="btn-close" data-bs-dismiss="alert" aria-label="Close" (click)="closeAlert()"></button>
+  </div>
+</div>

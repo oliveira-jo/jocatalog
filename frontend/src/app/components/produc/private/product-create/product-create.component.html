@@ -10,21 +10,41 @@
         <div class="form-group row">
           <label class="col-md-2 col-form-label m-1" for="name"> Nome </label>
           <div class="col-md-8">
-            <input class="form-control" type="text" id="name" name="name" placeholder="Type a subjct of product"
+            <input class="form-control" type="text" id="name" name="name" placeholder="Nome do produto"
               formControlName="name">
             <div class="text-danger" *ngIf="productForm.controls['name'].invalid && 
-                  (productForm.controls['name'].touched || productForm.controls['subject'].dirty)">
+                  (productForm.controls['name'].touched || productForm.controls['name'].dirty)">
               <span *ngIf="productForm.controls['name'].errors?.['required']"> Campo é obrigatório!</span>
               <span *ngIf="productForm.controls['name'].errors?.['minlength']"> Mínimo 3 caracteres!</span>
               <span *ngIf="productForm.controls['name'].errors?.['maxlength']"> Máximo 50 caracteres!</span>
             </div>
           </div>
         </div>
+
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label m-1" for="category"> Categoria </label>
+          <div class="col-md-8">
+
+            <select id="category" class="form-select" aria-label="Default select example" formControlName="category"
+              (change)="onCategoryChange($event)">
+
+              <option selected disabled>Selecione... </option>
+
+              @for (category of categories; track category.id){
+              <option [value]="category.id">
+                {{ category.name }}
+              </option>
+              }
+
+            </select>
+          </div>
+        </div>
+
         <div class="form-group row">
           <label class="col-md-2 col-form-label" for="description"> Descrição </label>
           <div class="col-md-8">
-            <textarea class="form-control m-2" name="description" id="description" rows="10"
-              placeholder="Type a tickets description" formControlName="description">
+            <textarea class="form-control m-2" name="description" id="description" rows="10" placeholder="Descrição"
+              formControlName="description">
             </textarea>
             <div class="text-danger" *ngIf="productForm.controls['description'].invalid && 
                 (productForm.controls['description'].touched || productForm.controls['description'].dirty)">
@@ -37,8 +57,7 @@
         <div class="form-group row">
           <label class="col-md-2 col-form-label m-1" for="price"> Preço </label>
           <div class="col-md-8">
-            <input class="form-control" type="text" id="price" name="price" placeholder="Type a price of product"
-              formControlName="price">
+            <input class="form-control" type="text" id="price" name="price" placeholder="Valor" formControlName="price">
             <div class="text-danger" *ngIf="productForm.controls['price'].invalid && 
                   (productForm.controls['price'].touched || productForm.controls['price'].dirty)">
               <span *ngIf="productForm.controls['price'].errors?.['required']"> Campo é obrigatório!</span>
@@ -48,13 +67,10 @@
         <div class="form-group row">
           <label class="col-md-2 col-form-label m-1" for="imgUrl"> Imagem Url </label>
           <div class="col-md-8">
-            <input class="form-control" type="text" id="imgUrl" name="imgUrl" placeholder="Type a imgUrl of product"
+            <input class="form-control" type="text" id="imgUrl" name="imgUrl" placeholder="A imagem deve ser JPG ou PNG"
               formControlName="imgUrl">
             <div class="text-danger" *ngIf="productForm.controls['imgUrl'].invalid && 
                   (productForm.controls['imgUrl'].touched || productForm.controls['imgUrl'].dirty)">
-              <span *ngIf="productForm.controls['imgUrl'].errors?.['required']"> Campo é obrigatório!</span>
-              <span *ngIf="productForm.controls['imgUrl'].errors?.['minlength']"> Mínimo 3 caracteres!</span>
-              <span *ngIf="productForm.controls['imgUrl'].errors?.['maxlength']"> Máximo 50 caracteres!</span>
             </div>
           </div>
         </div>
@@ -66,7 +82,7 @@
               [disabled]="!productForm.valid">
               Salvar
             </button>
-            <button class="btn btn-outline-secondary m-2" title="cancelar" [routerLink]="['/tickets']">
+            <button class="btn btn-outline-secondary m-2" title="cancelar" (click)="cancel()">
               Cancelar
             </button>
           </div>

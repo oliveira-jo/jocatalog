@@ -1,11 +1,11 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ProductService } from '../../../services/product.service';
-import { product } from '../../../models/product';
-
+import { ProductService } from '../../../../services/product.service';
+import { product } from '../../../../models/product';
 @Component({
-  selector: 'app-product-list',
+  selector: 'app-product-list-admin',
   imports: [
     CommonModule,
     RouterLink
@@ -13,10 +13,10 @@ import { product } from '../../../models/product';
   providers: [
     ProductService
   ],
-  templateUrl: './product-list.component.html',
-  styleUrl: './product-list.component.css'
+  templateUrl: './product-list-admin.component.html',
+  styleUrl: './product-list-admin.component.css'
 })
-export class ProductListComponent implements OnInit {
+export class ProductListAdminComponent implements OnInit {
 
   products: product[] | undefined;
   errorMessage: string = '';
@@ -54,8 +54,8 @@ export class ProductListComponent implements OnInit {
 
   onSaveComplete() {
     this.service.getProducts().subscribe(
-      tickets => {
-        this.products = this.products;
+      prod => {
+        this.products = prod.content;
       },
       error => this.errorMessage = <any>error
     );

@@ -1,11 +1,11 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ProductService } from '../../../services/product.service';
-import { product } from '../../../models/product';
+import { ProductService } from '../../../../services/product.service';
+import { product } from '../../../../models/product';
+
 @Component({
-  selector: 'app-product-list-admin',
+  selector: 'app-product-list',
   imports: [
     CommonModule,
     RouterLink
@@ -13,10 +13,10 @@ import { product } from '../../../models/product';
   providers: [
     ProductService
   ],
-  templateUrl: './product-list-admin.component.html',
-  styleUrl: './product-list-admin.component.css'
+  templateUrl: './product-list.component.html',
+  styleUrl: './product-list.component.css'
 })
-export class ProductListAdminComponent implements OnInit {
+export class ProductListComponent implements OnInit {
 
   products: product[] | undefined;
   errorMessage: string = '';
@@ -38,23 +38,9 @@ export class ProductListAdminComponent implements OnInit {
     })
   };
 
-  deleteProduct(id: string): void {
-    if (id == '') {
-      this.onSaveComplete();
-    } else {
-      if (confirm(`Tem certeza que deseja excluir o ticket: ?`)) {
-        this.service.delete(id)
-          .subscribe(
-            () => this.onSaveComplete(),
-            (error: any) => this.errorMessage = <any>error
-          );
-      }
-    }
-  }
-
   onSaveComplete() {
     this.service.getProducts().subscribe(
-      tickets => {
+      produc => {
         this.products = this.products;
       },
       error => this.errorMessage = <any>error

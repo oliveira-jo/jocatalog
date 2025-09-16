@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { product } from '../models/product';
 import { productsList } from '../models/products-list';
+import { AuthService } from './auth.service';
 
 
 @Injectable({
@@ -15,7 +16,8 @@ export class ProductService {
   private urlApi = `${environment.baseUrl}/api/v1/products`;
   private jsonHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private auth: AuthService) {
+
   }
 
   getProducts(): Observable<productsList> {
@@ -39,15 +41,28 @@ export class ProductService {
   }
 
   create(product: product) {
-    return this.http.post<product>(this.urlApi, product, { headers: this.jsonHeaders })
+
+    const bear = `Bearer ${this.auth.getToken}`;
+    const headers = new HttpHeaders({
+      "Authorization": `${bear}`
+    });
+
+    return this.http.post<product>(this.urlApi, product, { headers: headers })
       .pipe(
         catchError(this.handleError)
       );
+
   }
 
   update(product: product) {
+
+    const bear = `Bearer ${this.auth.getToken}`;
+    const headers = new HttpHeaders({
+      "Authorization": `${bear}`
+    });
+
     const urlId = `${this.urlApi}/${product.id}`;
-    return this.http.put<product>(urlId, product, { headers: this.jsonHeaders })
+    return this.http.put<product>(urlId, product, { headers: headers })
       .pipe(
         catchError(this.handleError)
       );
@@ -55,8 +70,13 @@ export class ProductService {
   }
 
   delete(id: string) {
+    const bear = `Bearer ${this.auth.getToken}`;
+    const headers = new HttpHeaders({
+      "Authorization": `${bear}`
+    });
+
     const urlId = `${this.urlApi}/${id}`;
-    return this.http.delete<product>(urlId, { headers: this.jsonHeaders })
+    return this.http.delete<product>(urlId, { headers: headers })
       .pipe(
         catchError(this.handleError)
       );
@@ -82,7 +102,7 @@ export class ProductService {
       description: null,
       price: null,
       imgUrl: null,
-      categories: []
+      categories: null
     }
   }
 

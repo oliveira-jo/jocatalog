@@ -4,15 +4,16 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
-import { ProductService } from '../../../services/product.service';
-import { product } from '../../../models/product';
+import { ProductService } from '../../../../services/product.service';
+import { product } from '../../../../models/product';
+import { CategoryService } from '../../../../services/category.service';
+import { category } from '../../../../models/category';
 
 @Component({
   selector: 'app-product-update',
   imports: [
     NgIf,
-    ReactiveFormsModule,
-    RouterLink
+    ReactiveFormsModule
   ],
   providers: [
     ProductService
@@ -26,24 +27,27 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
   formMode!: string;
   product!: product;
   productForm!: FormGroup;
-  private subscription!: Subscription
+  private subscription!: Subscription;
+  categories!: category[];
+  selectedCategoryId!: number;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private service: ProductService
-
+    private service: ProductService,
+    private categoryService: CategoryService
   ) {
   }
 
   ngOnInit() {
     this.formMode = 'new';
+    this.getCategories();
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(1000)]],
-      imgUrl: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      price: ['', [Validators.required]]
+      imgUrl: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
+      price: ['', [Validators.required]],
     });
 
     this.subscription = this.route.paramMap.subscribe(
@@ -53,21 +57,33 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
         const description = params.get('description');
         const price = params.get('price');
         const imgUrl = params.get('imgUrl');
-        const categories = params.get('categories');
-
+        const categories = params.get('category');
         if (id == null || id == '') {
-          const t: product = {
-            id: '', name: '', description: '', imgUrl: '', price: null, categories: []
+          const prod: product = {
+            id: '', name: '', description: '', imgUrl: '', price: null, categories: null
           }
+          this.showProduct(prod);
+        } else {
+          this.getProduct(id);
         }
-
       }
     );
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  onCategoryChange(event: any) {
+    this.selectedCategoryId = event.target.value;
   }
+
+  getCategories() {
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+      },
+      error: (err) => {
+        this.errorMessage = <any>err
+      }
+    })
+  };
 
   getProduct(id: string): void {
     this.service.getProduct(id).subscribe(
@@ -76,20 +92,18 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
     )
   }
 
-  showProduct(product: product): void {
+  showProduct(prod: product): void {
     if (this.productForm) {
       this.productForm.reset();
     }
 
-    this.product = product;
-
+    this.product = prod;
     this.productForm.patchValue({
       name: this.product.name,
       description: this.product.description,
       price: this.product.price,
       imgUrl: this.product.imgUrl
     });
-
   }
 
   deleteProduct(): void {
@@ -107,8 +121,8 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
 
   saveProduct(): void {
 
-    if (this.productForm.valid) { // form validation
-      if (this.productForm.dirty) { // method was modify from the beginning
+    if (this.productForm.valid) {
+      if (this.productForm.dirty) {
 
         // PUT METHOD
         const newProduct = { ...this.product, ...this.productForm.value };
@@ -127,11 +141,19 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
 
   onSaveComplete(): void {
     this.productForm.reset();
-    this.router.navigate(['/products']);
+    this.router.navigate(['/products-painel']);
   }
 
   closeAlert() {
     this.errorMessage = '';
+  }
+
+  cancel() {
+    this.router.navigate(['/products-painel'])
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { product } from '../../../models/product';
+import { product } from '../../../../models/product';
 import { Subscription } from 'rxjs';
-import { ProductService } from '../../../services/product.service';
+import { ProductService } from '../../../../services/product.service';
 
 @Component({
   selector: 'app-product-details',

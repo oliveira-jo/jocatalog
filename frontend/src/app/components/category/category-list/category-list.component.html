@@ -1,0 +1,19 @@
+<div class="container">
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+
+    @for (category of categories; track $index) {
+
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{category.id}}</h5>
+          <p class="card-text">{{category.name}} </p>
+        </div>
+      </div>
+    </div>
+    }
+
+  </div>
+
+</div>

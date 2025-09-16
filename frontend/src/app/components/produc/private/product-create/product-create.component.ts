@@ -1,21 +1,25 @@
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
 
-import { ProductService } from '../../../services/product.service';
-import { product } from '../../../models/product';
+import { ProductService } from '../../../../services/product.service';
+import { product } from '../../../../models/product';
+import { CategoryService } from '../../../../services/category.service';
+import { category } from '../../../../models/category';
+
 
 @Component({
   selector: 'app-product-create',
   imports: [
     NgIf,
-    ReactiveFormsModule,
-    RouterLink
+    ReactiveFormsModule
   ],
   providers: [
-    ProductService
+    ProductService,
+    CategoryService,
+    NgModel
   ],
   templateUrl: './product-create.component.html',
   styleUrl: './product-create.component.css'
@@ -28,22 +32,25 @@ export class ProductCreateComponent implements OnInit, OnDestroy {
   productForm!: FormGroup;
   private subscription!: Subscription
 
+  categories!: category[];
+  selectedCategoryId!: number;
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private service: ProductService
-  ) {
-
-  }
+    private service: ProductService,
+    private categoryService: CategoryService
+  ) { }
 
   ngOnInit() {
     this.formMode = 'new';
+    this.getCategories();
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(1000)]],
-      imgUrl: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      price: ['', [Validators.required]]
+      imgUrl: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      price: ['', [Validators.required]],
     });
 
     this.subscription = this.route.paramMap.subscribe(
@@ -53,11 +60,11 @@ export class ProductCreateComponent implements OnInit, OnDestroy {
         const description = params.get('description');
         const price = params.get('price');
         const imgUrl = params.get('imgUrl');
-        const categories = params.get('categories');
+        const category = params.get('category');
 
         if (id == null || id == '') {
-          const t: product = {
-            id: '', name: '', description: '', imgUrl: '', price: null, categories: []
+          const prod: product = {
+            id: '', name: '', description: '', imgUrl: '', price: null, categories: null
           }
         }
 
@@ -65,17 +72,29 @@ export class ProductCreateComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  onCategoryChange(event: any) {
+    this.selectedCategoryId = event.target.value;
   }
 
+  getCategories() {
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+      },
+      error: (err) => {
+        this.errorMessage = <any>err
+      }
+    })
+  };
+
   saveProduct(): void {
-    if (this.productForm.valid) { // form validation
-      if (this.productForm.dirty) { // method was modify from the beginning
+    if (this.productForm.valid) {
+      if (this.productForm.dirty) {
 
         const newProduct = { ...this.product, ...this.productForm.value };
+
         this.service.create(newProduct).subscribe( // POST
-          () => this.router.navigate(['/products']),
+          () => this.router.navigate(['/products-painel']),
           (error: any) => {
             this.errorMessage = <any>error;
             this.errorMessage = 'Erro ao cadastrar produto - product.';
@@ -88,8 +107,16 @@ export class ProductCreateComponent implements OnInit, OnDestroy {
     }
   }
 
+  cancel() {
+    this.router.navigate(['/products-painel'])
+  }
+
   closeAlert() {
     this.errorMessage = '';
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

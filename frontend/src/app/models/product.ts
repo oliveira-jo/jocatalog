@@ -6,5 +6,5 @@ export interface product {
   description: string | null,
   price: string | null,
   imgUrl: string | null,
-  categories: Array<category>
+  categories: Array<category> | null
 }
