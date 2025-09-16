@@ -1,5 +1,6 @@
 package com.devjoliveira.jocatalog.services;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,6 +77,9 @@ public class ProductService {
   public ProductDTO save(ProductDTO productDTO) {
     Product product = new Product();
     copyDtoToEntity(productDTO, product);
+
+    product.setDate(Instant.now());
+
     product = productRepository.save(product);
     return new ProductDTO(product, product.getCategories());
   }
