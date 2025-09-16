@@ -28,7 +28,7 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
   product!: product;
   productForm!: FormGroup;
   private subscription!: Subscription;
-  categories!: category[];
+  categories: category[] | undefined;
   selectedCategoryId!: number;
 
   constructor(
@@ -37,6 +37,7 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
     private router: Router,
     private service: ProductService,
     private categoryService: CategoryService
+
   ) {
   }
 
@@ -48,6 +49,7 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(1000)]],
       imgUrl: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       price: ['', [Validators.required]],
+      category: ['', [Validators.required]],
     });
 
     this.subscription = this.route.paramMap.subscribe(
@@ -58,14 +60,16 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
         const price = params.get('price');
         const imgUrl = params.get('imgUrl');
         const categories = params.get('category');
+
         if (id == null || id == '') {
           const prod: product = {
             id: '', name: '', description: '', imgUrl: '', price: null, categories: null
           }
-          this.showProduct(prod);
+          this.reloadProduct(prod);
         } else {
           this.getProduct(id);
         }
+
       }
     );
   }
@@ -87,12 +91,12 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
 
   getProduct(id: string): void {
     this.service.getProduct(id).subscribe(
-      (product: product) => this.showProduct(product),
+      (product: product) => this.reloadProduct(product),
       (error: any) => this.errorMessage = <any>error
     )
   }
 
-  showProduct(prod: product): void {
+  reloadProduct(prod: product): void {
     if (this.productForm) {
       this.productForm.reset();
     }
@@ -120,7 +124,6 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
   }
 
   saveProduct(): void {
-
     if (this.productForm.valid) {
       if (this.productForm.dirty) {
 

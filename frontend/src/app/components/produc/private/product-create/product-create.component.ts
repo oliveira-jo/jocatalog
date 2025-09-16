@@ -31,7 +31,6 @@ export class ProductCreateComponent implements OnInit, OnDestroy {
   product!: product;
   productForm!: FormGroup;
   private subscription!: Subscription
-
   categories!: category[];
   selectedCategoryId!: number;
 
