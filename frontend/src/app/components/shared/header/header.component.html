@@ -8,20 +8,18 @@
     </div>
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
       <li><a [routerLink]='["/"]' class="nav-link px-2 link-secondary fs-4">Home</a></li>
-      <li><a [routerLink]='["/products/search"]' class="nav-link px-2 fs-4">Catálogo</a></li>
+      <li><a [routerLink]='["/products"]' class="nav-link px-2 fs-4">Catálogo</a></li>
     </ul>
 
-    @if (userAuth?.first_name) {
-
+    <!-- @if (userAuth?.first_name) {
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item">
         <a class="nav-link"> Olá, {{ userAuth?.first_name }} </a>
       </li>
     </ul>
+    } -->
 
-    }
-
-    @if (isLogged() === true) {
+    @if (isLogged()) {
 
     <form class="d-flex">
       <button class="btn btn-outline-secondary m-2" type="submit" [routerLink]="['/products-painel']">Painel de

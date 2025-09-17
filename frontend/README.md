@@ -7,12 +7,13 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 * [x] Header (public)
 * [x] Home (public)
 * [x] Catalogo list (public)
-* [ ] Login (public)
+* [x] Search product (public)
+* [x] Login (public)
 * [ ] Register (public)
 * [x] Catalogo list for (admin)
-* [ ] Create Product (admin)
-* [ ] Update Product (admin)
-* [ ] Delete Product (admin)
+* [x] Create Product (admin)
+* [x] Update Product (admin)
+* [x] Delete Product (admin)
 
 ## Development server
 
