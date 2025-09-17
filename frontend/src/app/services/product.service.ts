@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, StreamingResourceOptions } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -6,7 +6,6 @@ import { environment } from '../../environments/environment';
 import { product } from '../models/product';
 import { productsList } from '../models/products-list';
 import { AuthService } from './auth.service';
-
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +17,26 @@ export class ProductService {
 
   constructor(private http: HttpClient, private auth: AuthService) {
 
+  }
+
+  //searchProduct(page?: number, size?: number, name?: string, categoriId?: string, sort?: string): Observable<productsList> {
+  searchProduct(name?: string, categoriId?: string): Observable<productsList> {
+
+    let params = new HttpParams()
+
+    if (name) {
+      params = params.set('name', name);
+    }
+
+    if (categoriId) {
+      params = params.set('categoryId', categoriId);
+    }
+
+    var response = this.http.get<productsList>(this.urlApi, { params })
+      .pipe(
+        catchError(this.handleError)
+      );
+    return response;
   }
 
   getProducts(): Observable<productsList> {

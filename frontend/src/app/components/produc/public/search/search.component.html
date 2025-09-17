@@ -1,23 +1,44 @@
 <nav class="container">
-
-  <h2>Catálogo de Produtos</h2>
+  <h2>Pesquisa de Produtos</h2>
   <nav class="navbar bg-body-tertiary border">
     <div class="container-fluid">
       <a class="navbar-brand"></a>
-      <form class="d-flex" role="search">
-        <input class="form-control m-2" type="name" placeholder="Nome do Produto" aria-label="name" />
-        <select class="form-select m-2" id="inputGroupSelect01">
-          <!-- @for (item of items; track $index) {} -->
-          <option selected>Category</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-        <button class="btn btn-primary m-2" type="submit">Pesquisar</button>
-        <button class="btn btn-outline-secondary m-2" type="submit">Limpar Filtro</button>
+      <form class="d-flex" [formGroup]="searchForm" (ngSubmit)="searchProduct()">
+        <div class="form-group row">
+          <div class="col-md-10">
+            <input id="name" type="text" formControlName="name" class="form-control m-2" placeholder="Busca por nome">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-10">
+            <select class="form-select m-2" formControlName="category" id="category"
+              (change)="onCategoryChange($event)">
+              <option selected disabled>Selecione categoria</option>
+              @for (category of categories; track category.id){
+              <option [value]="category.id"> {{ category.name }} </option> }
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary m-2">Pesquisar</button>
       </form>
     </div>
   </nav>
 </nav>
-
-<app-product-list></app-product-list>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    @for (product of products; track $index) {
+    <div class="col">
+      <div class="card">
+        <img class="img-thumbnail" [src]="product.imgUrl" alt="Produto">
+        <div class="card-body">
+          <h5 class="card-title">{{product.name}}</h5>
+          <p class="card-text"> R$ {{product.price}} </p>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm m-2" [routerLink]="['/products', product.id , 'details']">
+          <i class="fa fa-eye">detalhes</i>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+</div>
