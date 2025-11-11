@@ -24,11 +24,11 @@ export class ProductListComponent implements OnInit {
   constructor(private service: ProductService) { }
 
   ngOnInit(): void {
-    this.getProducts(0);
+    this.loadProducts(0);
   }
 
-  getProducts(page: number) {
-    this.service.getProducts(page, 5).subscribe({
+  loadProducts(page: number) {
+    this.service.getProducts(page, 6).subscribe({
       next: (products) => {
         this.products = products.content;
       },

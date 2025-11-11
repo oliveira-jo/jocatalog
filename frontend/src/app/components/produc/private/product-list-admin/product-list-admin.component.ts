@@ -32,17 +32,6 @@ export class ProductListAdminComponent implements OnInit {
     this.loadPage(0);
   }
 
-  // getProducts(page: number) {
-  //   this.service.getProducts(page, 6).subscribe({
-  //     next: (products) => {
-  //       this.products = products.content;
-  //     },
-  //     error: (err) => {
-  //       this.errorMessage = <any>err
-  //     }
-  //   })
-  // };
-
   loadPage(page: number): void {
     this.service.getProducts(page, 6).subscribe(
       response => {
