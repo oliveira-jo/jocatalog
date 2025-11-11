@@ -46,7 +46,7 @@ export class SearchComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadPage(0);
+    this.loadProducts(0);
     this.getCategories();
 
     // build reactive form
@@ -96,13 +96,15 @@ export class SearchComponent implements OnInit {
     })
   };
 
-  loadPage(page: number): void {
+  loadProducts(page: number): void {
     this.service.getProducts(page, 6).subscribe(
       response => {
         this.products = response.content;
         this.totalPages = response.totalPages;
         this.currentPage = response.number;
         this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
   }
 

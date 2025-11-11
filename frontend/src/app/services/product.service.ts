@@ -6,14 +6,7 @@ import { environment } from '../../environments/environment';
 import { Product } from '../models/product';
 import { productsList } from '../models/products-list';
 import { AuthService } from './auth.service';
-
-export interface Page<T> {
-  content: T[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-}
+import { Page } from '../models/page';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {

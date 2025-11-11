@@ -18,7 +18,11 @@ import { Product } from '../../../../models/product';
 })
 export class ProductListComponent implements OnInit {
 
-  products: Product[] | undefined;
+  products: Product[] = [];
+  totalPages: number = 0;
+  currentPage: number = 0;
+  pages: number[] = [];
+
   errorMessage: string = '';
 
   constructor(private service: ProductService) { }
@@ -27,16 +31,17 @@ export class ProductListComponent implements OnInit {
     this.loadProducts(0);
   }
 
-  loadProducts(page: number) {
-    this.service.getProducts(page, 6).subscribe({
-      next: (products) => {
-        this.products = products.content;
-      },
-      error: (err) => {
-        this.errorMessage = <any>err
-      }
-    })
-  };
+  loadProducts(page: number): void {
+    this.service.getProducts(page, 6).subscribe(
+      response => {
+        this.products = response.content;
+        this.totalPages = response.totalPages;
+        this.currentPage = response.number;
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+  }
 
   onSaveComplete(page: number) {
     this.service.getProducts(page, 5).subscribe(

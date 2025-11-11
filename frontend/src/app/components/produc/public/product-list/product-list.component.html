@@ -17,7 +17,29 @@
       </div>
     </div>
     }
+  </div>
 
+  <!-- Paginação -->
+  <div class="d-flex justify-content-center">
+    <div class="pagination ">
+      <!-- Previous button -->
+      @if (currentPage > 0) {
+      <button (click)="loadProducts(currentPage - 1)">
+        &laquo; <!-- ← symbol -->
+      </button>
+      }
+      <!-- Page numbers -->
+      @for (page of pages; track page) {
+      <button (click)="loadProducts(page)" [class.active]="page === currentPage">
+        {{ page + 1 }}
+      </button>
+      }
+      <!-- Next button -->
+      @if (currentPage < totalPages - 1) { <button (click)="loadProducts(currentPage + 1)">
+        &raquo; <!-- → symbol -->
+        </button>
+        }
+    </div>
   </div>
 
 </div>

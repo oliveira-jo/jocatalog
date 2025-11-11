@@ -8,6 +8,8 @@
   border: none;
   background: #eee;
   cursor: pointer;
+
+  border-radius: 5px;
 }
 
 .pagination button.active {
