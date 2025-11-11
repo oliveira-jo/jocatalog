@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
 
 import { ProductService } from '../../../../services/product.service';
-import { product } from '../../../../models/product';
+import { Product } from '../../../../models/product';
 import { CategoryService } from '../../../../services/category.service';
 import { category } from '../../../../models/category';
 
@@ -28,7 +28,7 @@ export class ProductCreateComponent implements OnInit, OnDestroy {
 
   errorMessage: string = '';
   formMode!: string;
-  product!: product;
+  product!: Product;
   productForm!: FormGroup;
   private subscription!: Subscription
   categories!: category[];
@@ -62,7 +62,7 @@ export class ProductCreateComponent implements OnInit, OnDestroy {
         const category = params.get('category');
 
         if (id == null || id == '') {
-          const prod: product = {
+          const prod: Product = {
             id: '', name: '', description: '', imgUrl: '', price: null, categories: null
           }
         }

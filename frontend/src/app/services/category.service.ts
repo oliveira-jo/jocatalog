@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { product } from '../models/product';
+import { Product } from '../models/product';
 import { AuthService } from './auth.service';
 import { category } from '../models/category';
 
@@ -47,7 +47,7 @@ export class CategoryService {
       "Authorization": `${bear}`
     });
 
-    return this.http.post<product>(this.urlApi, category, { headers: headers })
+    return this.http.post<Product>(this.urlApi, category, { headers: headers })
       .pipe(
         catchError(this.handleError)
       );
@@ -62,7 +62,7 @@ export class CategoryService {
     });
 
     const urlId = `${this.urlApi}/${category.id}`;
-    return this.http.put<product>(urlId, category, { headers: headers })
+    return this.http.put<Product>(urlId, category, { headers: headers })
       .pipe(
         catchError(this.handleError)
       );

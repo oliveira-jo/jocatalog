@@ -1,6 +1,6 @@
-<nav class="container">
+<nav class="container p-1 mb-4">
   <h2>Pesquisa de Produtos</h2>
-  <nav class="navbar bg-body-tertiary border">
+  <nav class="navbar bg-body-tertiary border rounded">
     <div class="container-fluid">
       <a class="navbar-brand"></a>
       <form class="d-flex" [formGroup]="searchForm" (ngSubmit)="searchProduct()">
@@ -41,4 +41,18 @@
     </div>
     }
   </div>
+
+  <!-- Paginação -->
+  <div class="d-flex justify-content-center">
+    <div class="pagination ">
+      @if (pages.length > 0) {
+      @for (page of pages; track page) {
+      <button (click)="loadPage(page)" [class.active]="page === currentPage">
+        {{ page + 1 }}
+      </button>
+      }
+      }
+    </div>
+  </div>
+
 </div>

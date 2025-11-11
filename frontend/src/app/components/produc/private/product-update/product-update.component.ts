@@ -5,7 +5,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { ProductService } from '../../../../services/product.service';
-import { product } from '../../../../models/product';
+import { Product } from '../../../../models/product';
 import { CategoryService } from '../../../../services/category.service';
 import { category } from '../../../../models/category';
 
@@ -25,7 +25,7 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
 
   errorMessage: string = '';
   formMode!: string;
-  product!: product;
+  product!: Product;
   productForm!: FormGroup;
   private subscription!: Subscription;
   categories: category[] | undefined;
@@ -62,7 +62,7 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
         const categories = params.get('category');
 
         if (id == null || id == '') {
-          const prod: product = {
+          const prod: Product = {
             id: '', name: '', description: '', imgUrl: '', price: null, categories: null
           }
           this.reloadProduct(prod);
@@ -91,12 +91,12 @@ export class ProductUpdateComponent implements OnInit, OnDestroy {
 
   getProduct(id: string): void {
     this.service.getProduct(id).subscribe(
-      (product: product) => this.reloadProduct(product),
+      (product: Product) => this.reloadProduct(product),
       (error: any) => this.errorMessage = <any>error
     )
   }
 
-  reloadProduct(prod: product): void {
+  reloadProduct(prod: Product): void {
     if (this.productForm) {
       this.productForm.reset();
     }

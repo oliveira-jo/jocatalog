@@ -3,14 +3,23 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { product } from '../models/product';
+import { Product } from '../models/product';
 import { productsList } from '../models/products-list';
 import { AuthService } from './auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+
+@Injectable({ providedIn: 'root' })
 export class ProductService {
+
+
+  // private apiUrl = 'http://localhost:8080/api/products';
 
   private urlApi = `${environment.baseUrl}/api/v1/products`;
   private jsonHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -39,41 +48,47 @@ export class ProductService {
     return response;
   }
 
-  getProducts(): Observable<productsList> {
+  // getProducts(): Observable<productsList> {
+  //   var response = this.http.get<productsList>(this.urlApi, { headers: this.jsonHeaders })
+  //     .pipe(
+  //       catchError(this.handleError)
+  //     );
+  //   return response;
+  // }
+  getProducts(page: number, size: number): Observable<Page<Product>> {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('size', size);
 
-    var response = this.http.get<productsList>(this.urlApi, { headers: this.jsonHeaders })
-      .pipe(
-        catchError(this.handleError)
-      );
-    return response;
+    return this.http.get<Page<Product>>(this.urlApi, { params });
   }
 
-  getProduct(id: string): Observable<product> {
+  getProduct(id: string): Observable<Product> {
     if (id === '') {
       return of(this.initProduct());
     }
     const urlId = `${this.urlApi}/${id}`;
-    return this.http.get<product>(urlId, { headers: this.jsonHeaders })
+    return this.http.get<Product>(urlId, { headers: this.jsonHeaders })
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  create(product: product) {
+  create(product: Product) {
 
     const bear = `Bearer ${this.auth.getToken}`;
     const headers = new HttpHeaders({
       "Authorization": `${bear}`
     });
 
-    return this.http.post<product>(this.urlApi, product, { headers: headers })
+    return this.http.post<Product>(this.urlApi, product, { headers: headers })
       .pipe(
         catchError(this.handleError)
       );
 
   }
 
-  update(product: product) {
+  update(product: Product) {
 
     const bear = `Bearer ${this.auth.getToken}`;
     const headers = new HttpHeaders({
@@ -81,7 +96,7 @@ export class ProductService {
     });
 
     const urlId = `${this.urlApi}/${product.id}`;
-    return this.http.put<product>(urlId, product, { headers: headers })
+    return this.http.put<Product>(urlId, product, { headers: headers })
       .pipe(
         catchError(this.handleError)
       );
@@ -95,7 +110,7 @@ export class ProductService {
     });
 
     const urlId = `${this.urlApi}/${id}`;
-    return this.http.delete<product>(urlId, { headers: headers })
+    return this.http.delete<Product>(urlId, { headers: headers })
       .pipe(
         catchError(this.handleError)
       );
@@ -114,7 +129,7 @@ export class ProductService {
     return throwError(msgErro);
   }
 
-  private initProduct(): product {
+  private initProduct(): Product {
     return {
       id: null,
       name: null,

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../../services/product.service';
-import { product } from '../../../../models/product';
+import { Product } from '../../../../models/product';
 
 @Component({
   selector: 'app-product-list',
@@ -18,17 +18,17 @@ import { product } from '../../../../models/product';
 })
 export class ProductListComponent implements OnInit {
 
-  products: product[] | undefined;
+  products: Product[] | undefined;
   errorMessage: string = '';
 
   constructor(private service: ProductService) { }
 
   ngOnInit(): void {
-    this.getProducts();
+    this.getProducts(0);
   }
 
-  getProducts() {
-    this.service.getProducts().subscribe({
+  getProducts(page: number) {
+    this.service.getProducts(page, 5).subscribe({
       next: (products) => {
         this.products = products.content;
       },
@@ -38,8 +38,8 @@ export class ProductListComponent implements OnInit {
     })
   };
 
-  onSaveComplete() {
-    this.service.getProducts().subscribe(
+  onSaveComplete(page: number) {
+    this.service.getProducts(page, 5).subscribe(
       produc => {
         this.products = this.products;
       },

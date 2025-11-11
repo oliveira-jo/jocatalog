@@ -1,5 +1,5 @@
-import { product } from "./product";
+import { Product } from "./product";
 
 export interface productsList {
-  content: product[]
+  content: Product[]
 }

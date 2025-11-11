@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../../../../services/product.service';
-import { product } from '../../../../models/product';
+import { ProductService, Page } from '../../../../services/product.service';
+import { Product } from '../../../../models/product';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../../../services/category.service';
 import { category } from '../../../../models/category';
@@ -22,7 +22,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 })
 export class SearchComponent implements OnInit {
 
-  products: product[] | undefined;
+  products: Product[] = [];
+  totalPages: number = 0;
+  currentPage: number = 0;
+  pages: number[] = [];
+
   errorMessage: string = '';
   categories!: category[];
   selectedCategoryId!: number;
@@ -42,6 +46,7 @@ export class SearchComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.loadPage(0);
     this.getCategories();
 
     // build reactive form
@@ -64,13 +69,16 @@ export class SearchComponent implements OnInit {
   }
 
   searchProduct() {
-
     const pesquisaNome = this.searchForm.get('name')?.value;
     const category = this.searchForm.get('category')?.value;
 
     this.service.searchProduct(pesquisaNome, category).subscribe({
       next: (products) => {
-        this.products = products.content;
+        // convert returned 'product' models to 'Product' by ensuring id is a number
+        this.products = products.content.map(p => ({
+          ...((p as any)),
+          id: Number((p as any).id ?? 0)
+        })) as Product[];
       },
       error: (err) => {
         this.errorMessage = <any>err
@@ -89,23 +97,22 @@ export class SearchComponent implements OnInit {
     })
   };
 
-  getProducts() {
-    this.service.getProducts().subscribe({
-      next: (products) => {
-        this.products = products.content;
-      },
-      error: (err) => {
-        this.errorMessage = <any>err
-      }
-    })
-  };
+  loadPage(page: number): void {
+    this.service.getProducts(page, 6).subscribe(
+      response => {
+        this.products = response.content;
+        this.totalPages = response.totalPages;
+        this.currentPage = response.number;
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+      });
+  }
 
   onCategoryChange(event: any) {
     this.selectedCategoryId = event.target.value;
   }
 
-  onSaveComplete() {
-    this.service.getProducts().subscribe(
+  onSaveComplete(page: number) {
+    this.service.getProducts(page, 6).subscribe(
       prod => {
         this.products = prod.content;
       },

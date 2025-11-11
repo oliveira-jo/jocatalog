@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { product } from '../../../../models/product';
+import { Product } from '../../../../models/product';
 import { Subscription } from 'rxjs';
 import { ProductService } from '../../../../services/product.service';
 
@@ -18,7 +18,7 @@ import { ProductService } from '../../../../services/product.service';
 export class ProductDetailsComponent implements OnInit {
 
   errorMessage: string = '';
-  product!: product;
+  product!: Product;
   private subscription!: Subscription
 
   constructor(
@@ -43,7 +43,7 @@ export class ProductDetailsComponent implements OnInit {
 
   getProducts(id: string): void {
     this.service.getProduct(id).subscribe(
-      (product: product) => {
+      (product: Product) => {
         this.product = product
       },
       (error: any) => this.errorMessage = <any>error

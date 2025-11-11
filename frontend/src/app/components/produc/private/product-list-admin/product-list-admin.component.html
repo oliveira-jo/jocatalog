@@ -50,4 +50,16 @@
     </div>
   </div>
   }
+  <!-- Paginação -->
+  <div class="d-flex justify-content-center">
+    <div class="pagination ">
+      @if (pages.length > 0) {
+      @for (page of pages; track page) {
+      <button (click)="loadPage(page)" [class.active]="page === currentPage">
+        {{ page + 1 }}
+      </button>
+      }
+      }
+    </div>
+  </div>
 </div>

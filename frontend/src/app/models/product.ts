@@ -1,6 +1,6 @@
 import { category } from "./category";
 
-export interface product {
+export interface Product {
   id?: string | null,
   name: string | null,
   description: string | null,
