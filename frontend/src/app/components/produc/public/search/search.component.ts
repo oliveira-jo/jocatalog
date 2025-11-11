@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService, Page } from '../../../../services/product.service';
+import { ProductService } from '../../../../services/product.service';
 import { Product } from '../../../../models/product';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../../../services/category.service';
@@ -74,7 +74,6 @@ export class SearchComponent implements OnInit {
 
     this.service.searchProduct(pesquisaNome, category).subscribe({
       next: (products) => {
-        // convert returned 'product' models to 'Product' by ensuring id is a number
         this.products = products.content.map(p => ({
           ...((p as any)),
           id: Number((p as any).id ?? 0)

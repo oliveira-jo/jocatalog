@@ -18,13 +18,11 @@ import { Product } from '../../../../models/product';
 })
 export class ProductListAdminComponent implements OnInit {
 
-  //products: Product[] | undefined;
-  errorMessage: string = '';
-
   products: Product[] = [];
   totalPages: number = 0;
   currentPage: number = 0;
   pages: number[] = [];
+  errorMessage: string = '';
 
   constructor(private service: ProductService) { }
 

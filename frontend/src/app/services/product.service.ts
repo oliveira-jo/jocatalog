@@ -1,7 +1,7 @@
-import { Injectable, StreamingResourceOptions } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Product } from '../models/product';
 import { productsList } from '../models/products-list';
@@ -18,17 +18,13 @@ export interface Page<T> {
 @Injectable({ providedIn: 'root' })
 export class ProductService {
 
-
-  // private apiUrl = 'http://localhost:8080/api/products';
-
   private urlApi = `${environment.baseUrl}/api/v1/products`;
+
   private jsonHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private http: HttpClient, private auth: AuthService) {
-
   }
 
-  //searchProduct(page?: number, size?: number, name?: string, categoriId?: string, sort?: string): Observable<productsList> {
   searchProduct(name?: string, categoriId?: string): Observable<productsList> {
 
     let params = new HttpParams()
@@ -48,13 +44,6 @@ export class ProductService {
     return response;
   }
 
-  // getProducts(): Observable<productsList> {
-  //   var response = this.http.get<productsList>(this.urlApi, { headers: this.jsonHeaders })
-  //     .pipe(
-  //       catchError(this.handleError)
-  //     );
-  //   return response;
-  // }
   getProducts(page: number, size: number): Observable<Page<Product>> {
     const params = new HttpParams()
       .set('page', page)

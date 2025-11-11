@@ -1,6 +1,6 @@
 
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
@@ -23,13 +23,13 @@ import { category } from '../../../../models/category';
 })
 export class ProductUpdateComponent implements OnInit, OnDestroy {
 
-  errorMessage: string = '';
   formMode!: string;
   product!: Product;
   productForm!: FormGroup;
-  private subscription!: Subscription;
   categories: category[] | undefined;
   selectedCategoryId!: number;
+  errorMessage: string = '';
+  private subscription!: Subscription;
 
   constructor(
     private fb: FormBuilder,
