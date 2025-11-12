@@ -3,7 +3,6 @@ import { Router, RouterLink } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
-import { user } from '../../../models/user';
 
 @Component({
   selector: 'app-login',
@@ -22,11 +21,10 @@ import { user } from '../../../models/user';
 
 export class LoginComponent implements OnInit {
 
-  public errorMessage: string = '';
-  loginForm!: FormGroup;
   pageTitle: string = 'Login';
+  errorMessage: string = '';
+  loginForm!: FormGroup;
   formMode!: string;
-  user!: user;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,15 +46,14 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (this.loginForm.invalid) return;
-
     this.authService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
-      next: (response) => {
+      next: () => {
         this.router.navigate(['/products-painel']);
       },
       error: (err) => {
         this.errorMessage = 'Invalid credentials';
       }
-    })
+    });
   }
 
   closeAlert() {

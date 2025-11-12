@@ -1,21 +1,15 @@
-<div class="container">
+<div class="container justify-content-center align-items-center w-50">
   <div class="card p-4 m-4">
-
-
-
     <!-- Form -->
     <form [formGroup]="loginForm">
-      <!-- <img class="mb-4" src="/favicon.ico" alt="" width="72" height="57"> -->
-
       <h2>Login</h2>
-
       <!-- header -->
-      <div class="form-floating">
+      <div class="form-floating mb-3">
         <input class="form-control" type="text" id="username" name="username" placeholder="name@example.com"
           formControlName="username">
         <label for="floatingInput">Email:</label>
       </div>
-      <div class="form-floating">
+      <div class="form-floating mb-3">
         <input class="form-control" type="password" id="password" name="password" placeholder="Password"
           formControlName="password">
         <label for="floatingPassword">Senha:</label>
@@ -32,11 +26,9 @@
         Cancelar
       </button>
       <div class="checkbox mb-2"> </div>
-      <p class="mt-5 mb-3 text-muted">&copy; 2025–2030</p>
+      <p class="mt-4 mb-4 text-muted">&copy; 2025–2030</p>
     </form>
-
   </div>
-
   <!-- Alert   -->
   <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="errorMessage">
     <strong> {{errorMessage}} </strong>

@@ -8,16 +8,9 @@
     </div>
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
       <li><a [routerLink]='["/"]' class="nav-link px-2 link-secondary fs-4">Home</a></li>
-      <li><a [routerLink]='["/products"]' class="nav-link px-2 fs-4">Catálogo</a></li>
+      <li><a [routerLink]='["/products"]' class="nav-link link-secondary px-2 fs-4">Catálogo</a></li>
+      <li><a [routerLink]='["/products/search"]' class="nav-link link-secondary px-2 fs-4">Bucar produto</a></li>
     </ul>
-
-    <!-- @if (userAuth?.first_name) {
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      <li class="nav-item">
-        <a class="nav-link"> Olá, {{ userAuth?.first_name }} </a>
-      </li>
-    </ul>
-    } -->
 
     @if (isLogged()) {
 
@@ -35,10 +28,39 @@
     }
 
     @if (isLogged()) {
+    @if (userAuth$ | async; as userAuth) {
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+      Olá, {{userAuth?.firstName}}
+    </button>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Olá, {{userAuth?.firstName}}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Name: {{userAuth?.firstName}} {{ userAuth?.lastName }}</p>
+            <p>Email: {{ userAuth?.email }}</p>
+            <p>Permissão:</p>
+            @for (role of userAuth?.roles; track role.id) {
+            <p>{{ role.authority }}</p>
+            }
+            <p class="btn btn-link">Editar Perfil</p>
+            <p></p>
+            <button class="btn btn-secondary" type="submit" (click)="logout()" data-bs-dismiss="modal">Fazer
+              logaut</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+    }
+    <!-- @if (isLogged()) {
     <div class="col-md-3 text-end">
       <button class="btn btn-outline-secondary m-2" type="submit" (click)="logout()">Sair</button>
     </div>
-    }
-
+    } -->
   </header>
 </div>

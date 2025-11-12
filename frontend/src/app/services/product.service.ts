@@ -12,20 +12,19 @@ import { Page } from '../models/page';
 export class ProductService {
 
   private urlApi = `${environment.baseUrl}/api/v1/products`;
-
   private jsonHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private http: HttpClient, private auth: AuthService) {
+  constructor(
+    private http: HttpClient,
+    private auth: AuthService) {
   }
 
   searchProduct(name?: string, categoriId?: string): Observable<productsList> {
 
     let params = new HttpParams()
-
     if (name) {
       params = params.set('name', name);
     }
-
     if (categoriId) {
       params = params.set('categoryId', categoriId);
     }
@@ -34,6 +33,7 @@ export class ProductService {
       .pipe(
         catchError(this.handleError)
       );
+
     return response;
   }
 
@@ -57,7 +57,6 @@ export class ProductService {
   }
 
   create(product: Product) {
-
     const bear = `Bearer ${this.auth.getToken}`;
     const headers = new HttpHeaders({
       "Authorization": `${bear}`
@@ -67,11 +66,9 @@ export class ProductService {
       .pipe(
         catchError(this.handleError)
       );
-
   }
 
   update(product: Product) {
-
     const bear = `Bearer ${this.auth.getToken}`;
     const headers = new HttpHeaders({
       "Authorization": `${bear}`
@@ -82,7 +79,6 @@ export class ProductService {
       .pipe(
         catchError(this.handleError)
       );
-
   }
 
   delete(id: string) {
@@ -99,7 +95,6 @@ export class ProductService {
   }
 
   private handleError(e: { error: { message: any; }; status: any; body: { error: any; }; }) {
-
     let msgErro: string;
     if (e.error instanceof ErrorEvent) {
       console.log(`* Error * : ${e.error.message}`);

@@ -4,7 +4,6 @@ import { Product } from '../../../../models/product';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../../../services/category.service';
 import { category } from '../../../../models/category';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
@@ -22,18 +21,19 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 })
 export class SearchComponent implements OnInit {
 
+  // Page products
   products: Product[] = [];
   totalPages: number = 0;
   currentPage: number = 0;
   pages: number[] = [];
 
-  errorMessage: string = '';
   categories!: category[];
   selectedCategoryId!: number;
 
   formMode!: string;
   searchForm!: FormGroup;
-  private subscription!: Subscription
+
+  errorMessage: string = '';
 
   categoryName!: string | null;
   categoryId!: string | null;
@@ -49,7 +49,6 @@ export class SearchComponent implements OnInit {
     this.loadProducts(0);
     this.getCategories();
 
-    // build reactive form
     this.searchForm = this.fb.group({
       name: [''],
       category: ['']

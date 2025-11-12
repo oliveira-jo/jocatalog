@@ -1,6 +1,6 @@
 <nav class="container p-1 mb-4">
   <h2>Pesquisa de Produtos</h2>
-  <nav class="navbar bg-body-tertiary border rounded">
+  <nav class="navbar g-body-tertiary border rounded">
     <div class="container-fluid">
       <a class="navbar-brand"></a>
       <form class="d-flex" [formGroup]="searchForm" (ngSubmit)="searchProduct()">
@@ -13,7 +13,7 @@
           <div class="col-md-10">
             <select class="form-select m-2" formControlName="category" id="category"
               (change)="onCategoryChange($event)">
-              <option selected disabled>Selecione categoria</option>
+              <option selected disabled>Categorias:</option>
               @for (category of categories; track category.id){
               <option [value]="category.id"> {{ category.name }} </option> }
             </select>

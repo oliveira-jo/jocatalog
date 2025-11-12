@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../../services/product.service';
 import { Product } from '../../../../models/product';
+import { AuthService } from '../../../../services/auth.service';
+import { user } from '../../../../models/user';
 @Component({
   selector: 'app-product-list-admin',
   imports: [
@@ -24,7 +26,7 @@ export class ProductListAdminComponent implements OnInit {
   pages: number[] = [];
   errorMessage: string = '';
 
-  constructor(private service: ProductService) { }
+  constructor(private service: ProductService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.loadProducts(0);
