@@ -7,6 +7,7 @@ import { AsyncPipe } from "@angular/common";
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [RouterLink, AsyncPipe],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -18,17 +19,15 @@ export class HeaderComponent {
 
   constructor(private auth: AuthService) {
     this.userAuth$ = this.auth.currentUser$;
-
+    //this.userAuth$.subscribe(user => console.log('[Header] Got user:', user));
   }
 
   logout() {
     this.auth.logout();
-
   }
 
   isLogged() {
     return this.auth.userIsLogged();
-
   }
 
 }

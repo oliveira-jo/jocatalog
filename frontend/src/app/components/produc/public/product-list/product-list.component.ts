@@ -6,6 +6,7 @@ import { Product } from '../../../../models/product';
 
 @Component({
   selector: 'app-product-list',
+  standalone: true,
   imports: [
     CommonModule,
     RouterLink

@@ -49,6 +49,10 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
       next: () => {
         this.router.navigate(['/products-painel']);
+        // .then(() => {
+        //   window.location.reload();
+        // it's not elegant but we need to reload the app to update the nav menu
+        // });;
       },
       error: (err) => {
         this.errorMessage = 'Invalid credentials';

@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { LoginResponse } from '../models/login-response.type';
 import { user } from '../models/user';
-
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +15,6 @@ export class AuthService {
   private apiUrl = `${environment.baseUrl}/api/v1/oauth2/token`;
   private apiUrlMe = `${environment.baseUrl}/api/v1/auth/me`;
   private token: string | null = null;
-  //user!: user | null;
 
   private currentUserSubject = new BehaviorSubject<user | null>(null);
   currentUser$: Observable<user | null> = this.currentUserSubject.asObservable();
@@ -34,22 +32,42 @@ export class AuthService {
     return this.http.post<LoginResponse>(this.apiUrl, body, { headers: headers }).pipe(
       tap(res => {
         if (res.access_token) {
-          localStorage.setItem('access_token', btoa(JSON.stringify(res.access_token)));
+          // localStorage.setItem('access_token', btoa(JSON.stringify(res.access_token)));
+          localStorage.setItem('access_token', res.access_token);
         }
       }),
       switchMap(() => this.loadCurrentUser()), // load user after token
-      tap(user => this.currentUserSubject.next(user)), // emit user to all observers
-      map(() => void 0) // convert to void observable
+      tap(user => {
+        this.currentUserSubject.next(user)
+        // console.log('[AuthService] User loaded:', user);
+      }), // emit user to all observers
+      map(() => void 0), // convert to void observable
+      catchError(err => this.handleError(err))
     );
 
   }
 
-  loadCurrentUser(): Observable<user> {
-    const bear = `Bearer ${this.getToken}`;
+  loadCurrentUser(): Observable<user | null> {
+    const token = this.getToken;
+    if (!token) {
+      // console.warn('[AuthService] No token found');
+      return throwError(() => 'No token found');
+    }
+
+    const bearer = `Bearer ${this.getToken}`;
     const headers = new HttpHeaders({
-      "Authorization": `${bear}`
+      "Authorization": `${bearer}`
     });
-    return this.http.get<user>(this.apiUrlMe, { headers: headers });
+    return this.http.get<user>(this.apiUrlMe, { headers: headers }).pipe(
+      tap(user => {
+        // console.log('[AuthService] loadCurrentUser Fetched user:', user);
+        this.currentUserSubject.next(user);
+      }),
+      catchError(err => {
+        // console.error('[AuthService] Error loading user:', err);
+        this.currentUserSubject.next(null);
+        return of(null);
+      }));
   }
 
   setToken(token: string): void {
@@ -59,22 +77,17 @@ export class AuthService {
 
   logout(): void {
     this.token = null;
-    //this.user = null;
-
     localStorage.removeItem('access_token');
     this.currentUserSubject.next(null); // emit null to observers
     this.router.navigate(['/products/search']);
   }
 
   get getToken(): string | null {
-    return localStorage.getItem('access_token')
-      ? JSON.parse(atob(localStorage.getItem('access_token')!))
-      : null;
+    return localStorage.getItem('access_token');
   }
 
   get getUserAuthenticated(): user | null {
     return this.currentUserSubject.value;
-    //return this.userIsLogged() ? this.user : null;
   }
 
   userIsLogged(): boolean {

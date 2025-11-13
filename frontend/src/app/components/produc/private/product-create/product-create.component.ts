@@ -12,6 +12,7 @@ import { category } from '../../../../models/category';
 
 @Component({
   selector: 'app-product-create',
+  standalone: true,
   imports: [
     NgIf,
     ReactiveFormsModule

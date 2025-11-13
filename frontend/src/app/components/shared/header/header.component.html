@@ -27,7 +27,7 @@
     </div>
     }
 
-    @if (isLogged()) {
+    <!-- @if (isLogged()) { -->
     @if (userAuth$ | async; as userAuth) {
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
       Olá, {{userAuth?.firstName}}
@@ -56,7 +56,7 @@
       </div>
     </div>
     }
-    }
+    <!-- } -->
     <!-- @if (isLogged()) {
     <div class="col-md-3 text-end">
       <button class="btn btn-outline-secondary m-2" type="submit" (click)="logout()">Sair</button>

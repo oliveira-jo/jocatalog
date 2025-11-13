@@ -6,6 +6,7 @@ import { CategoryService } from '../../../services/category.service';
 
 @Component({
   selector: 'app-category-list',
+  standalone: true,
   imports: [
     CommonModule
   ],

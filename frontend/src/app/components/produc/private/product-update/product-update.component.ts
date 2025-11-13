@@ -11,6 +11,7 @@ import { category } from '../../../../models/category';
 
 @Component({
   selector: 'app-product-update',
+  standalone: true,
   imports: [
     NgIf,
     ReactiveFormsModule

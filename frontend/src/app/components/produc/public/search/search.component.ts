@@ -8,6 +8,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-search',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     RouterLink

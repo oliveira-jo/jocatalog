@@ -8,6 +8,7 @@ import { AuthService } from '../../../../services/auth.service';
 import { user } from '../../../../models/user';
 @Component({
   selector: 'app-product-list-admin',
+  standalone: true,
   imports: [
     CommonModule,
     RouterLink
